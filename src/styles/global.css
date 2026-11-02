@@ -76,8 +76,6 @@ nav { margin-left: auto; }
 .hero { padding: clamp(3rem, 8vw, 6rem) 0 3rem; background: radial-gradient(1200px 500px at 85% -10%, #1b2a5a 0%, transparent 60%); }
 .hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 3rem; align-items: center; }
 @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
-.eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent); font-weight: 600; font-size: 0.9rem; margin: 0 0 1rem; }
-.dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent); }
 .headline { font-size: 1.25rem; color: var(--text); margin: 0 0 0.3rem; }
 .location { color: var(--muted); margin: 0 0 2rem; }
 .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
