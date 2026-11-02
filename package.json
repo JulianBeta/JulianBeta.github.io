@@ -1,0 +1,25 @@
+{
+  "name": "julianbeta-site",
+  "version": "1.0.0",
+  "description": "Personal QA engineering portfolio of Julian Betancourt Cuervo",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview --port 4321",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "type": "module",
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "astro": "^7.4.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.6",
+    "typescript": "^6.0.3"
+  },
+  "private": true
+}

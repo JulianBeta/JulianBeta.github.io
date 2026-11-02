@@ -1,0 +1,159 @@
+---
+import { profile, experience, skills, certifications, projects, type Lang } from '../data/profile';
+import { t, localePath, formatMonth } from '../data/i18n';
+import { getPosts, postSlug, formatDate } from '../data/blog';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const posts = (await getPosts(lang)).slice(0, 3);
+
+// Hero "test run" panel: the CV told as a passing suite.
+const suite = [
+  ['Playwright', lang === 'en' ? 'enterprise standard set' : 'estándar empresarial'],
+  ['API + Auth0', lang === 'en' ? 'OAuth/OIDC & RBAC validated' : 'OAuth/OIDC y RBAC validados'],
+  ['AI / MCP', lang === 'en' ? 'self-healing, −30% maintenance' : 'self-healing, −30% mantenimiento'],
+  ['QA CoE', lang === 'en' ? 'strategy & mentorship' : 'estrategia y mentoría'],
+];
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>{t(lang, 'hero.available')}</p>
+      <h1 id="hero-title">{profile.name}</h1>
+      <p class="headline">{profile.headline[lang]}</p>
+      <p class="location">{profile.location[lang]}</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href={profile.cv} download data-testid="cv-download">{t(lang, 'hero.cta.cv')}</a>
+        <a class="btn btn-ghost" href="#contact">{t(lang, 'hero.cta.contact')}</a>
+      </div>
+    </div>
+
+    <div class="terminal" role="img" aria-label={lang === 'en' ? 'Career shown as a passing test run' : 'Carrera mostrada como una ejecución de pruebas exitosa'}>
+      <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span><code>npx playwright test career.spec.ts</code></div>
+      <pre aria-hidden="true"><code>{suite.map(([name, detail]) => (
+<span class="line"><span class="pass">✓</span> <span class="spec">{name}</span> <span class="muted">› {detail}</span>{'\n'}</span>
+))}<span class="line">{'\n'}<span class="pass">{suite.length} passed</span> <span class="muted">({profile.yearsExperience}y)</span></span></code></pre>
+    </div>
+  </div>
+
+  <div class="container stats">
+    {profile.stats.map((s) => (
+      <div class="stat">
+        <span class="stat-value">{s.value}</span>
+        <span class="stat-label">{s.label[lang]}</span>
+      </div>
+    ))}
+  </div>
+</section>
+
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="container narrow">
+    <h2 id="about-title">{t(lang, 'section.about')}</h2>
+    <p class="lead">{profile.summary[lang]}</p>
+  </div>
+</section>
+
+<section id="experience" class="section alt" aria-labelledby="exp-title">
+  <div class="container">
+    <h2 id="exp-title">{t(lang, 'section.experience')}</h2>
+    <ol class="timeline">
+      {experience.map((job) => (
+        <li class="job">
+          <div class="job-head">
+            <h3>{job.role[lang]} <span class="at">· {job.company}</span></h3>
+            <p class="job-meta">
+              <time datetime={job.start}>{formatMonth(job.start, lang)}</time> –{' '}
+              {job.end ? <time datetime={job.end}>{formatMonth(job.end, lang)}</time> : t(lang, 'exp.present')}
+              {' · '}{job.place[lang]}
+            </p>
+          </div>
+          <ul class="job-highlights">
+            {job.highlights[lang].map((h) => <li>{h}</li>)}
+          </ul>
+          <ul class="chips" aria-label="Stack">
+            {job.stack.map((s) => <li>{s}</li>)}
+          </ul>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<section id="skills" class="section" aria-labelledby="skills-title">
+  <div class="container">
+    <h2 id="skills-title">{t(lang, 'section.skills')}</h2>
+    <div class="skill-grid">
+      {skills.map((g) => (
+        <div class="card">
+          <h3>{g.group[lang]}</h3>
+          <ul class="chips">{g.items.map((i) => <li>{i}</li>)}</ul>
+        </div>
+      ))}
+    </div>
+
+    <h2 class="sub">{t(lang, 'section.certs')}</h2>
+    <ul class="certs">
+      {certifications.map((c) => (
+        <li><strong>{c.name}</strong><span>{c.issuer}</span></li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<section id="projects" class="section alt" aria-labelledby="projects-title">
+  <div class="container">
+    <h2 id="projects-title">{t(lang, 'section.projects')}</h2>
+    <div class="project-grid">
+      {projects.map((p) => (
+        <article class="card project" data-status={p.status}>
+          <header>
+            <h3>{p.name}</h3>
+            {p.status === 'wip' && <span class="badge">{t(lang, 'projects.wip')}</span>}
+          </header>
+          <p>{p.description[lang]}</p>
+          <ul class="chips">{p.tags.map((tag) => <li>{tag}</li>)}</ul>
+          {(p.repo || p.demo) && (
+            <p class="project-links">
+              {p.repo && <a href={p.repo} target="_blank" rel="noopener">{t(lang, 'projects.repo')} ↗</a>}
+              {p.demo && <a href={p.demo} target="_blank" rel="noopener">Demo ↗</a>}
+            </p>
+          )}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section id="blog" class="section" aria-labelledby="blog-title">
+  <div class="container narrow">
+    <h2 id="blog-title">{t(lang, 'section.blog')}</h2>
+    {posts.length === 0 ? (
+      <p>{t(lang, 'blog.empty')}</p>
+    ) : (
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li>
+            <a href={localePath(lang, `/blog/${postSlug(post)}/`)}>{post.data.title}</a>
+            <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date, lang)}</time>
+          </li>
+        ))}
+      </ul>
+    )}
+    <p><a class="more" href={localePath(lang, '/blog/')}>{t(lang, 'blog.all')} →</a></p>
+  </div>
+</section>
+
+<section id="contact" class="section alt" aria-labelledby="contact-title">
+  <div class="container narrow center">
+    <h2 id="contact-title">{t(lang, 'section.contact')}</h2>
+    <p class="lead">{t(lang, 'contact.text')}</p>
+    <div class="cta-row centered">
+      <a class="btn btn-primary" href={`mailto:${profile.email}`}>{profile.email}</a>
+      <a class="btn btn-ghost" href={profile.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="btn btn-ghost" href={profile.github} target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</section>

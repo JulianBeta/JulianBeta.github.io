@@ -1,0 +1,88 @@
+---
+import '../styles/global.css';
+import { profile, type Lang } from '../data/profile';
+import { t, localePath, switchLangPath } from '../data/i18n';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  /** Path of this page in the other language, when it can't be derived from the URL. */
+  altPath?: string;
+}
+
+const { lang, title, description = profile.summary[lang], altPath } = Astro.props;
+const pageTitle = title ? `${title} · ${profile.name}` : `${profile.name} — ${profile.headline[lang]}`;
+const other: Lang = lang === 'en' ? 'es' : 'en';
+const path = Astro.url.pathname;
+const canonical = new URL(path, Astro.site);
+const otherPath = altPath ?? switchLangPath(path, other);
+const altEn = new URL(lang === 'en' ? path : otherPath, Astro.site);
+const altEs = new URL(lang === 'es' ? path : otherPath, Astro.site);
+const home = localePath(lang, '/');
+const nav = [
+  ['#about', 'nav.about'],
+  ['#experience', 'nav.experience'],
+  ['#projects', 'nav.projects'],
+  ['blog/', 'nav.blog'],
+  ['#contact', 'nav.contact'],
+] as const;
+const href = (target: string) => (target.startsWith('#') ? `${home}${target}` : localePath(lang, `/${target}`));
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={altEn} />
+    <link rel="alternate" hreflang="es" href={altEs} />
+    <link rel="alternate" hreflang="x-default" href={altEn} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${profile.name} · Blog`} href={new URL(localePath(lang, '/rss.xml'), Astro.site)} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'es_CO'} />
+    <meta name="theme-color" content="#0b1020" />
+  </head>
+  <body>
+    <a class="skip" href="#main">{t(lang, 'skip')}</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href={home}>
+          <span class="brand-mark" aria-hidden="true">{profile.initials}</span>
+          <span class="brand-name">Julian Betancourt</span>
+        </a>
+        <nav aria-label="Main">
+          <ul class="nav-list">
+            {nav.map(([target, key]) => <li><a href={href(target)}>{t(lang, key)}</a></li>)}
+          </ul>
+        </nav>
+        <a class="lang-switch" href={otherPath} hreflang={other} lang={other} data-testid="lang-switch">
+          {t(lang, 'lang.switch')}
+        </a>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© {new Date().getFullYear()} {profile.name}</p>
+        <p class="tested"><span class="check" aria-hidden="true">✓</span> {t(lang, 'footer.tested')}</p>
+        <ul class="footer-links">
+          <li><a href={profile.linkedin} rel="me noopener" target="_blank">LinkedIn</a></li>
+          <li><a href={profile.github} rel="me noopener" target="_blank">GitHub</a></li>
+          <li><a href={`mailto:${profile.email}`}>Email</a></li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>
