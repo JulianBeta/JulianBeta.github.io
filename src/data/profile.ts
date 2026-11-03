@@ -207,6 +207,8 @@ export const certifications: { name: string; issuer: string }[] = [
 export interface Project {
   name: string;
   description: L;
+  /** One-line summary for the CV (falls back to description). */
+  cv?: L;
   tags: string[];
   repo?: string;
   demo?: string;
@@ -217,6 +219,10 @@ export interface Project {
 export const projects: Project[] = [
   {
     name: 'julianbeta.github.io',
+    cv: {
+      en: 'Bilingual Astro portfolio that tests itself: Playwright E2E, axe-core accessibility and link checks gate every deploy.',
+      es: 'Portafolio bilingüe en Astro que se prueba a sí mismo: E2E con Playwright, accesibilidad con axe-core y validación de enlaces antes de cada despliegue.',
+    },
     description: {
       en: 'This website. Static Astro site that tests itself: Playwright E2E, axe accessibility checks and link validation run in GitHub Actions before every deploy.',
       es: 'Este sitio. Sitio estático en Astro que se prueba a sí mismo: E2E con Playwright, accesibilidad con axe y validación de enlaces en GitHub Actions antes de cada despliegue.',
@@ -227,6 +233,10 @@ export const projects: Project[] = [
   },
   {
     name: 'Playwright POM · Swag Labs',
+    cv: {
+      en: 'TypeScript BDD framework (Page Object Model): 99 scenarios on 3 browsers, visual and accessibility checks, 16 documented defects, CI-published report.',
+      es: 'Framework BDD en TypeScript (Page Object Model): 99 escenarios en 3 navegadores, pruebas visuales y de accesibilidad, 16 defectos documentados, reporte publicado por CI.',
+    },
     description: {
       en: 'TypeScript BDD framework (Page Object Model) for an e-commerce site: 99 scenarios on Chromium, Firefox and WebKit, visual regression, axe accessibility, page.clock for animated UI, and 16 documented defects tracked as expected-failure tests. CI publishes the report on every run.',
       es: 'Framework BDD en TypeScript (Page Object Model) para un e-commerce: 99 escenarios en Chromium, Firefox y WebKit, regresión visual, accesibilidad con axe, page.clock para UI animada y 16 defectos documentados como pruebas de fallo esperado. CI publica el reporte en cada ejecución.',
@@ -238,6 +248,10 @@ export const projects: Project[] = [
   },
   {
     name: 'Coda · LLM Eval & Red Team',
+    cv: {
+      en: 'Promptfoo evals and red teaming for an LLM chatbot: Claude Haiku vs. Sonnet vs. Qwen, LLM-as-a-judge rubrics, 376 generated attacks, CI quality gate.',
+      es: 'Evals y red teaming con Promptfoo para un chatbot LLM: Claude Haiku vs. Sonnet vs. Qwen, rúbricas LLM-as-a-judge, 376 ataques generados, quality gate en CI.',
+    },
     description: {
       en: 'A music-composition coach chatbot evaluated and red-teamed with Promptfoo: Claude Haiku vs. Sonnet vs. free Qwen on music-theory accuracy, guardrails, LLM-as-a-judge rubrics and 376 generated attacks, with a quality gate in CI.',
       es: 'Un chatbot que asesora en composición musical, evaluado y sometido a red teaming con Promptfoo: Claude Haiku vs. Sonnet vs. Qwen gratuito en precisión de teoría musical, guardrails, rúbricas LLM-as-a-judge y 376 ataques generados, con quality gate en CI.',

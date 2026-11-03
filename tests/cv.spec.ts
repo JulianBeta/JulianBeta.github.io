@@ -18,6 +18,15 @@ for (const { path, lang, present, certs } of cvs) {
       await expect(page.locator('body')).not.toContainText(/UNAD|Universidad Nacional Abierta|High School|Bachillerato/i);
     });
 
+    test('selected projects include the LLM eval project and no freelance collaborations', async ({ page }) => {
+      await page.goto(path);
+      const projects = page.locator('ul.projects');
+      await expect(projects).toContainText('Coda');
+      await expect(projects).toContainText(lang === 'en' ? 'In progress' : 'En progreso');
+      await expect(projects.locator('a[href="https://github.com/JulianBeta/composition-coach-llm-evals"]')).toHaveCount(1);
+      await expect(page.locator('body')).not.toContainText(/Laura Moth|Juan Pablo Huston|Gloria Norato|Collaborations|Colaboraciones/);
+    });
+
     test('uses the brand fonts', async ({ page }) => {
       await page.goto(path);
       await page.evaluate(() => document.fonts.ready);
