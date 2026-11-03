@@ -2,6 +2,8 @@
 import { profile, experience, skills, certifications, projects, type Lang } from '../data/profile';
 import { t, localePath, formatMonth } from '../data/i18n';
 import { getPosts, postSlug, formatDate } from '../data/blog';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
 
 interface Props {
   lang: Lang;
@@ -25,7 +27,7 @@ const suite = [
       <p class="headline">{profile.headline[lang]}</p>
       <p class="location">{profile.location[lang]}</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href={profile.cv[lang]} download data-testid="cv-download">{t(lang, 'hero.cta.cv')}</a>
+        <a class="btn btn-primary" href={profile.cv[lang]} download data-testid="cv-download"><Icon name="download" />{t(lang, 'hero.cta.cv')}</a>
         <a class="btn btn-ghost" href="#contact">{t(lang, 'hero.cta.contact')}</a>
       </div>
     </div>
@@ -54,6 +56,12 @@ const suite = [
     <p class="lead">{profile.summary[lang]}</p>
   </div>
 </section>
+
+<div class="brand-divider" aria-hidden="true">
+  <span class="brand-divider-line"></span>
+  <Logo size="3.2rem" color="var(--bright-snow)" />
+  <span class="brand-divider-line"></span>
+</div>
 
 <section id="experience" class="section alt" aria-labelledby="exp-title">
   <div class="container">
@@ -116,8 +124,8 @@ const suite = [
           <ul class="chips">{p.tags.map((tag) => <li>{tag}</li>)}</ul>
           {(p.repo || p.demo) && (
             <p class="project-links">
-              {p.repo && <a href={p.repo} target="_blank" rel="noopener">{t(lang, 'projects.repo')} ↗</a>}
-              {p.demo && <a href={p.demo} target="_blank" rel="noopener">{t(lang, 'projects.live')} ↗</a>}
+              {p.repo && <a href={p.repo} target="_blank" rel="noopener"><Icon name="brand-github" />{t(lang, 'projects.repo')}</a>}
+              {p.demo && <a href={p.demo} target="_blank" rel="noopener"><Icon name="arrow-up-right" />{t(lang, 'projects.live')}</a>}
             </p>
           )}
         </article>
@@ -150,9 +158,9 @@ const suite = [
     <h2 id="contact-title">{t(lang, 'section.contact')}</h2>
     <p class="lead">{t(lang, 'contact.text')}</p>
     <div class="cta-row centered">
-      <a class="btn btn-primary" href={`mailto:${profile.email}`}>{profile.email}</a>
-      <a class="btn btn-ghost" href={profile.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
-      <a class="btn btn-ghost" href={profile.github} target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn btn-primary" href={`mailto:${profile.email}`}><Icon name="mail" size="1.25em" />{profile.email}</a>
+      <a class="btn btn-ghost" href={profile.linkedin} target="_blank" rel="me noopener"><Icon name="brand-linkedin" size="1.25em" />LinkedIn</a>
+      <a class="btn btn-ghost" href={profile.github} target="_blank" rel="me noopener"><Icon name="brand-github" size="1.25em" />GitHub</a>
     </div>
   </div>
 </section>

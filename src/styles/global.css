@@ -66,10 +66,6 @@ h3 { font-size: 1.2rem; font-weight: 500; }
 }
 .header-inner { display: flex; align-items: center; gap: 1.5rem; min-height: 4rem; }
 .brand { display: flex; align-items: center; gap: 0.6rem; color: var(--text); text-decoration: none; font-family: var(--display); font-weight: 500; font-size: 1.15rem; letter-spacing: 0.02em; }
-.brand-mark {
-  display: grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 9px;
-  background: var(--accent); color: var(--accent-ink); font-size: 0.95rem; font-weight: 600;
-}
 nav { margin-left: auto; }
 .nav-list { display: flex; gap: 1.25rem; list-style: none; margin: 0; padding: 0; }
 .nav-list a { color: var(--muted); text-decoration: none; font-size: 0.95rem; }
@@ -189,4 +185,30 @@ nav { margin-left: auto; }
 .footer-inner { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; justify-content: space-between; }
 .footer-inner p { margin: 0; }
 .check { color: var(--accent); }
-.footer-links { display: flex; gap: 1rem; list-style: none; margin: 0; padding: 0; }
+
+/* Brand logo & icons */
+.icon { flex: none; vertical-align: -0.15em; }
+.brand-logo { flex: none; }
+.btn, .project-links a, .social-link { display: inline-flex; align-items: center; gap: 0.5em; }
+.btn .icon { color: inherit; }
+.btn-ghost .icon { color: var(--accent); }
+.project-links a .icon { color: var(--accent); }
+
+.brand-divider {
+  display: flex; align-items: center; gap: 1.5rem;
+  width: min(100% - 2.5rem, var(--maxw)); margin: 0 auto; padding: 1rem 0 3rem;
+}
+.brand-divider-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border) 30%, var(--border) 70%, transparent); }
+.brand-divider-line:first-child { background: linear-gradient(90deg, transparent, var(--border)); }
+.brand-divider-line:last-child { background: linear-gradient(90deg, var(--border), transparent); }
+
+.footer-brand { display: flex; align-items: center; gap: 0.75rem; color: var(--text); text-decoration: none; }
+.footer-brand strong { display: block; font-family: var(--display); font-weight: 500; font-size: 1.05rem; letter-spacing: 0.02em; }
+.footer-brand small { color: var(--muted); }
+.footer-brand:hover { color: var(--text); }
+
+.social { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; list-style: none; margin: 0; padding: 0; }
+.social--row .social-link { color: var(--muted); text-decoration: none; }
+.social--row .social-link .icon { color: var(--accent); transition: color 0.15s ease; }
+.social--row .social-link:hover { color: var(--text); }
+.social--row .social-link:hover .icon { color: var(--hot); }

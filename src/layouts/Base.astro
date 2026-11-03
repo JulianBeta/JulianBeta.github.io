@@ -4,6 +4,8 @@ import '@fontsource-variable/nunito';
 import '../styles/global.css';
 import { profile, type Lang } from '../data/profile';
 import { t, localePath, switchLangPath } from '../data/i18n';
+import Logo from '../components/Logo.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 
 interface Props {
   lang: Lang;
@@ -44,12 +46,20 @@ const href = (target: string) => (target.startsWith('#') ? `${home}${target}` : 
     <link rel="alternate" hreflang="es" href={altEs} />
     <link rel="alternate" hreflang="x-default" href={altEn} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="alternate" type="application/rss+xml" title={`${profile.name} · Blog`} href={new URL(localePath(lang, '/rss.xml'), Astro.site)} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'es_CO'} />
+    <meta property="og:image" content={new URL('/og-image.png', Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="JB monogram — Julian Betancourt" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#011627" />
   </head>
   <body>
@@ -57,7 +67,7 @@ const href = (target: string) => (target.startsWith('#') ? `${home}${target}` : 
     <header class="site-header">
       <div class="container header-inner">
         <a class="brand" href={home}>
-          <span class="brand-mark" aria-hidden="true">{profile.initials}</span>
+          <Logo class="brand-logo" size="2.1rem" color="var(--bright-snow)" />
           <span class="brand-name">Julian Betancourt</span>
         </a>
         <nav aria-label="Main">
@@ -77,13 +87,15 @@ const href = (target: string) => (target.startsWith('#') ? `${home}${target}` : 
 
     <footer class="site-footer">
       <div class="container footer-inner">
-        <p>© {new Date().getFullYear()} {profile.name}</p>
+        <a class="footer-brand" href={home}>
+          <Logo size="2.6rem" color="var(--bright-snow)" />
+          <span>
+            <strong>{profile.name}</strong>
+            <small>© {new Date().getFullYear()}</small>
+          </span>
+        </a>
         <p class="tested"><span class="check" aria-hidden="true">✓</span> {t(lang, 'footer.tested')}</p>
-        <ul class="footer-links">
-          <li><a href={profile.linkedin} rel="me noopener" target="_blank">LinkedIn</a></li>
-          <li><a href={profile.github} rel="me noopener" target="_blank">GitHub</a></li>
-          <li><a href={`mailto:${profile.email}`}>Email</a></li>
-        </ul>
+        <SocialLinks class="footer-links" />
       </div>
     </footer>
   </body>

@@ -1,0 +1,40 @@
+---
+// JB monogram ("J inside B · dot outside"), from brand/jb-logo/svg/jb-mark-*.svg.
+// Inline so colors follow the theme: `color` drives the B, `dot` the J's dot.
+interface Props {
+  size?: string;
+  color?: string;
+  dot?: string;
+  /** Accessible name; omit when the logo is decorative (e.g. next to visible text). */
+  label?: string;
+  class?: string;
+}
+
+const { size = '2rem', color = 'currentColor', dot = 'var(--hot-fuchsia, #ff3366)', label, class: className } = Astro.props;
+// Mask ids must be unique per page; several logos can appear on one page.
+const maskId = `jb-cut-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<svg
+  class={className}
+  viewBox="7 4.5 90 90"
+  width={size}
+  height={size}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  <defs>
+    <mask id={maskId} maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+      <rect width="100" height="100" fill="#fff"></rect>
+      <path d="M50 32 V70 A9 9 0 0 1 32 70" fill="none" stroke="#000" stroke-width="10"></path>
+    </mask>
+  </defs>
+  <g fill={color} mask={`url(#${maskId})`}>
+    <path d="M24 22 H44 V94 H24 Z"></path>
+    <path d="M24 22 H58 A17 17 0 0 1 58 56 H24 Z"></path>
+    <path d="M24 54 H60 A20 20 0 0 1 60 94 H24 Z"></path>
+  </g>
+  <circle cx="50" cy="10" r="5.5" fill={dot}></circle>
+</svg>

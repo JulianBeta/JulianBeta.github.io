@@ -5,6 +5,8 @@ import '@fontsource-variable/oswald';
 import '@fontsource-variable/nunito';
 import { profile, experience, skills, certifications, languages, projects, type Lang } from '../data/profile';
 import { formatMonth } from '../data/i18n';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
 
 interface Props {
   lang: Lang;
@@ -100,14 +102,13 @@ const projectText = (text: string) => text.replace(/^(This website|Este sitio)\.
         content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 0.06in;
         background: linear-gradient(90deg, var(--hot-fuchsia) 0 33%, var(--sea-green) 33% 66%, var(--blue-bell) 66%);
       }
-      .mark {
-        width: 0.66in; height: 0.66in; border-radius: 0.13in; display: grid; place-items: center;
-        background: var(--sea-green); color: var(--ink-black); font-family: var(--display); font-weight: 600; font-size: 19pt;
-      }
+      /* Brand mark on the dark header band: snow B + fuchsia dot (~16.5 mm, within the 14–18 mm guideline). */
+      .mark { display: block; }
       .cv-header h1 { color: var(--bright-snow); font-size: 26pt; font-weight: 600; line-height: 1.05; letter-spacing: 0.01em; }
       .headline { margin: 0.05in 0 0.08in; color: var(--sea-green); font-family: var(--display); font-weight: 400; font-size: 12.5pt; letter-spacing: 0.01em; }
       .contact { display: flex; flex-wrap: wrap; gap: 0.02in 0.16in; margin: 0; padding: 0; list-style: none; font-size: 8.6pt; color: #c9d2dc; }
-      .contact li::before { content: '▸ '; color: var(--hot-fuchsia); }
+      .contact li { display: inline-flex; align-items: center; gap: 0.05in; }
+      .contact .icon { color: var(--sea-green); }
 
       section { margin-bottom: 0.17in; }
       h2 {
@@ -154,17 +155,17 @@ const projectText = (text: string) => text.replace(/^(This website|Este sitio)\.
   </head>
   <body>
     <header class="cv-header">
-      <div class="mark" aria-hidden="true">{profile.initials}</div>
+      <Logo class="mark" size="0.65in" color="var(--bright-snow)" />
       <div>
         <h1>{profile.name}</h1>
         <p class="headline">{profile.headline[lang]}</p>
         <ul class="contact">
-          <li>{profile.location[lang]}</li>
-          <li><a href={`tel:${profile.phone.replace(/\s/g, '')}`}>{profile.phone}</a></li>
-          <li><a href={`mailto:${profile.email}`}>{profile.email}</a></li>
-          <li><a href={profile.linkedin}>{strip(profile.linkedin)}</a></li>
-          <li><a href={profile.github}>{strip(profile.github)}</a></li>
-          <li><a href={profile.website}>{strip(profile.website)}</a></li>
+          <li><Icon name="map-pin" />{profile.location[lang]}</li>
+          <li><Icon name="phone" /><a href={`tel:${profile.phone.replace(/\s/g, '')}`}>{profile.phone}</a></li>
+          <li><Icon name="mail" /><a href={`mailto:${profile.email}`}>{profile.email}</a></li>
+          <li><Icon name="brand-linkedin" /><a href={profile.linkedin}>{strip(profile.linkedin)}</a></li>
+          <li><Icon name="brand-github" /><a href={profile.github}>{strip(profile.github)}</a></li>
+          <li><Icon name="world" /><a href={profile.website}>{strip(profile.website)}</a></li>
         </ul>
       </div>
     </header>
@@ -234,7 +235,7 @@ const projectText = (text: string) => text.replace(/^(This website|Este sitio)\.
         <h2>{labels.projects}</h2>
         <ul class="list projects">
           {liveProjects.map((p) => (
-            <li><strong>{p.name}</strong> <span>— {projectText(p.description[lang])}</span><br /><a href={p.repo}>{strip(p.repo!)}</a></li>
+            <li><strong>{p.name}</strong> <span>— {projectText(p.description[lang])}</span><br /><a href={p.repo}><Icon name="brand-github" /> {strip(p.repo!)}</a></li>
           ))}
         </ul>
       </section>

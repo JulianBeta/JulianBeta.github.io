@@ -5,3 +5,7 @@ dist/
 test-results/
 playwright-report/
 planning/
+
+# Brand source kit (only the assets in use are copied to public/)
+brand/
+JBLogos.zip

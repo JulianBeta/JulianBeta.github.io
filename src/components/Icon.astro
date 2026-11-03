@@ -1,0 +1,25 @@
+---
+// Tabler Icons (MIT) via Iconify, rendered to inline SVG at build time: no client JS,
+// and `currentColor` lets each icon take the surrounding brand color.
+import icons from '@iconify-json/tabler/icons.json';
+import { getIconData, iconToHTML, iconToSVG, replaceIDs } from '@iconify/utils';
+
+interface Props {
+  name: string;
+  size?: string;
+  class?: string;
+}
+
+const { name, size = '1.1em', class: className } = Astro.props;
+const data = getIconData(icons, name);
+if (!data) throw new Error(`Unknown Tabler icon "${name}"`);
+const { attributes, body } = iconToSVG(data, { height: size, width: size });
+const svg = iconToHTML(replaceIDs(body), {
+  ...attributes,
+  class: ['icon', className].filter(Boolean).join(' '),
+  'aria-hidden': 'true',
+  focusable: 'false',
+});
+---
+
+<Fragment set:html={svg} />

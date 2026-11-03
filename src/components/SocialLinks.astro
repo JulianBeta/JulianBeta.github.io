@@ -1,0 +1,27 @@
+---
+import { profile } from '../data/profile';
+import Icon from './Icon.astro';
+
+interface Props {
+  class?: string;
+}
+
+const links = [
+  { label: 'LinkedIn', icon: 'brand-linkedin', href: profile.linkedin, external: true },
+  { label: 'GitHub', icon: 'brand-github', href: profile.github, external: true },
+  { label: 'Email', icon: 'mail', href: `mailto:${profile.email}`, external: false },
+];
+---
+
+<ul class:list={['social', 'social--row', Astro.props.class]}>
+  {
+    links.map((l) => (
+      <li>
+        <a class="social-link" href={l.href} target={l.external ? '_blank' : undefined} rel={l.external ? 'me noopener' : undefined}>
+          <Icon name={l.icon} size="1.25em" />
+          <span>{l.label}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
