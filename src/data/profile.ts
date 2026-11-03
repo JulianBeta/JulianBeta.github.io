@@ -237,12 +237,14 @@ export const projects: Project[] = [
     status: 'live',
   },
   {
-    name: 'LLM Eval & Red Team',
+    name: 'Coda · LLM Eval & Red Team',
     description: {
-      en: 'Evaluating and red-teaming LLM chatbots with Promptfoo: guardrail tests, LLM-as-a-judge rubrics, local vs. cloud model comparisons, all in CI.',
-      es: 'Evaluación y red teaming de chatbots LLM con Promptfoo: pruebas de guardrails, rúbricas LLM-as-a-judge, comparación de modelos locales vs. nube, todo en CI.',
+      en: 'A music-composition coach chatbot evaluated and red-teamed with Promptfoo: Claude Haiku vs. Sonnet vs. free Qwen on music-theory accuracy, guardrails, LLM-as-a-judge rubrics and 376 generated attacks, with a quality gate in CI.',
+      es: 'Un chatbot que asesora en composición musical, evaluado y sometido a red teaming con Promptfoo: Claude Haiku vs. Sonnet vs. Qwen gratuito en precisión de teoría musical, guardrails, rúbricas LLM-as-a-judge y 376 ataques generados, con quality gate en CI.',
     },
-    tags: ['Promptfoo', 'LLM', 'Red teaming', 'CI'],
+    tags: ['Promptfoo', 'LLM-as-a-judge', 'Red teaming', 'Claude', 'CI'],
+    repo: 'https://github.com/JulianBeta/composition-coach-llm-evals',
+    demo: 'https://julianbeta.github.io/composition-coach-llm-evals/',
     status: 'wip',
   },
   {
