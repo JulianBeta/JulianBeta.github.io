@@ -271,3 +271,62 @@ export const languages: { name: L; level: L }[] = [
   { name: { en: 'Spanish', es: 'Español' }, level: { en: 'Native', es: 'Nativo' } },
   { name: { en: 'English', es: 'Inglés' }, level: { en: 'Fluent (professional)', es: 'Fluido (profesional)' } },
 ];
+
+export interface Collaboration {
+  client: string;
+  kind: L;
+  years: string;
+  url: string;
+  /** Only for public repos. */
+  repo?: string;
+  image: string;
+  description: L;
+  dev: string[];
+  /** Only tools actually used; empty means no automated tests yet. */
+  testing: string[];
+}
+
+// Freelance websites. Order = display order.
+export const collaborations: Collaboration[] = [
+  {
+    client: 'Gloria Norato · Hair Design Studio',
+    kind: { en: 'Hair design studio · Bogotá', es: 'Estudio de diseño capilar · Bogotá' },
+    years: '2024 – 2026',
+    url: 'https://glorianorato.netlify.app',
+    repo: 'https://github.com/JulianBeta/gloria-norato-web',
+    image: '/img/collab/gloria-norato.webp',
+    description: {
+      en: 'Rebuilt the studio site: WhatsApp booking with pre-filled messages, product catalog with brand filters, swipeable gallery, an Instagram feed served by a serverless function, and a map with directions. 37 automated tests run on desktop and mobile.',
+      es: 'Reconstruí el sitio del estudio: reservas por WhatsApp con mensajes prellenados, catálogo con filtros por marca, galería deslizable, feed de Instagram servido por una función serverless y mapa con indicaciones. 37 pruebas automatizadas en escritorio y móvil.',
+    },
+    dev: ['React 19', 'Vite', 'Leaflet', 'Netlify Functions', 'Netlify Blobs', 'Instagram API'],
+    testing: ['Playwright', 'axe-core', 'GitHub Actions'],
+  },
+  {
+    client: 'Laura Moth · Tattoo Artist',
+    kind: { en: 'Tattoo artist', es: 'Tatuadora' },
+    years: '2024 – 2025',
+    url: 'https://laumoth.com',
+    repo: 'https://github.com/JulianBeta/laumoth_webpage',
+    image: '/img/collab/laura-moth.webp',
+    description: {
+      en: 'Portfolio and shop for a neo-traditional tattoo artist: services (cover-ups, tattoos, piercing), a work gallery with touch carousels, and a shop that takes orders through WhatsApp.',
+      es: 'Portafolio y tienda para una tatuadora neotradicional: servicios (cubrimientos, tatuajes, piercing), galería de trabajos con carruseles táctiles y una tienda que recibe pedidos por WhatsApp.',
+    },
+    dev: ['React', 'Vite', 'Swiper', 'ESLint'],
+    testing: [],
+  },
+  {
+    client: 'Juan Pablo Huston · Photography',
+    kind: { en: 'Photographer & art director · Bogotá', es: 'Fotógrafo y director de arte · Bogotá' },
+    years: '2026',
+    url: 'https://juanpablohuston.com',
+    image: '/img/collab/juan-pablo-huston.webp',
+    description: {
+      en: 'Photography and art-direction portfolio: a full-screen "swipe in any direction" entrance, personal-work and publication galleries, a links page and a contact form sent through a server-side email route.',
+      es: 'Portafolio de fotografía y dirección de arte: entrada a pantalla completa para deslizar en cualquier dirección, galerías de trabajo personal y publicaciones, página de enlaces y formulario de contacto enviado por una ruta de correo en el servidor.',
+    },
+    dev: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4', 'Nodemailer', 'Netlify'],
+    testing: [],
+  },
+];
