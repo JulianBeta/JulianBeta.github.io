@@ -226,13 +226,14 @@ export const projects: Project[] = [
     status: 'live',
   },
   {
-    name: 'Playwright + Cucumber BDD',
+    name: 'Playwright POM · Swag Labs',
     description: {
-      en: 'BDD framework for an e-commerce flow with Page Object Model, cross-browser parallel runs (Chromium, Firefox, WebKit) and HTML reports with failure screenshots.',
-      es: 'Framework BDD para un flujo de e-commerce con Page Object Model, ejecución paralela cross-browser (Chromium, Firefox, WebKit) y reportes HTML con capturas de fallos.',
+      en: 'TypeScript BDD framework (Page Object Model) for an e-commerce site: 99 scenarios on Chromium, Firefox and WebKit, visual regression, axe accessibility, page.clock for animated UI, and 16 documented defects tracked as expected-failure tests. CI publishes the report on every run.',
+      es: 'Framework BDD en TypeScript (Page Object Model) para un e-commerce: 99 escenarios en Chromium, Firefox y WebKit, regresión visual, accesibilidad con axe, page.clock para UI animada y 16 defectos documentados como pruebas de fallo esperado. CI publica el reporte en cada ejecución.',
     },
-    tags: ['Playwright', 'CucumberJS', 'POM', 'BDD'],
+    tags: ['Playwright', 'TypeScript', 'playwright-bdd', 'POM', 'GitHub Actions'],
     repo: 'https://github.com/JulianBeta/playwright-pom-saucedemo',
+    demo: 'https://julianbeta.github.io/playwright-pom-saucedemo/',
     status: 'live',
   },
   {
