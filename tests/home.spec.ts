@@ -10,6 +10,13 @@ test.describe('Home page', () => {
     await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible();
   });
 
+  test('uses Oswald for headings and Nunito for body text', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-family', /Oswald/);
+    await expect(page.locator('#about-title')).toHaveCSS('font-family', /Oswald/);
+    await expect(page.locator('.lead').first()).toHaveCSS('font-family', /Nunito/);
+  });
+
   test('renders in Spanish under /es/', async ({ page }) => {
     await page.goto('/es/');
     await expect(page.locator('html')).toHaveAttribute('lang', 'es');
@@ -17,15 +24,17 @@ test.describe('Home page', () => {
     await expect(page.getByRole('link', { name: 'Descargar CV' })).toBeVisible();
   });
 
-  test('CV download serves a real PDF', async ({ page, request }) => {
-    await page.goto('/');
-    const href = await page.getByTestId('cv-download').getAttribute('href');
-    expect(href).toBeTruthy();
-    const res = await request.get(href!);
-    expect(res.status()).toBe(200);
-    expect(res.headers()['content-type']).toContain('application/pdf');
-    expect((await res.body()).subarray(0, 5).toString()).toBe('%PDF-');
-  });
+  for (const [path, file] of [['/', 'Julian-Betancourt-CV.pdf'], ['/es/', 'Julian-Betancourt-CV-ES.pdf']]) {
+    test(`CV download on ${path} serves the ${file} PDF`, async ({ page, request }) => {
+      await page.goto(path);
+      const href = await page.getByTestId('cv-download').getAttribute('href');
+      expect(href).toBe(`/cv/${file}`);
+      const res = await request.get(href!);
+      expect(res.status()).toBe(200);
+      expect(res.headers()['content-type']).toContain('application/pdf');
+      expect((await res.body()).subarray(0, 5).toString()).toBe('%PDF-');
+    });
+  }
 
   test('contact links point to the right profiles', async ({ page }) => {
     await page.goto('/');

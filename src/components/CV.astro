@@ -1,0 +1,243 @@
+---
+// Print-optimized CV rendered from the same data as the site, in either language.
+// `npm run cv` exports /cv/ and /es/cv/ to the PDFs in public/cv/.
+import '@fontsource-variable/oswald';
+import '@fontsource-variable/nunito';
+import { profile, experience, skills, certifications, languages, projects, type Lang } from '../data/profile';
+import { formatMonth } from '../data/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const labels = {
+  en: {
+    title: 'CV',
+    profile: 'Profile',
+    skills: 'Core skills',
+    experience: 'Experience',
+    earlier: 'Earlier experience',
+    certs: 'Certifications & training',
+    languages: 'Languages',
+    projects: 'Selected projects',
+    present: 'Present',
+    stack: 'Stack',
+  },
+  es: {
+    title: 'Hoja de vida',
+    profile: 'Perfil',
+    skills: 'Habilidades clave',
+    experience: 'Experiencia',
+    earlier: 'Experiencia previa',
+    certs: 'Certificaciones y formación',
+    languages: 'Idiomas',
+    projects: 'Proyectos destacados',
+    present: 'Actual',
+    stack: 'Tecnologías',
+  },
+}[lang];
+
+const range = (start: string, end: string | null) =>
+  `${formatMonth(start, lang)} – ${end ? formatMonth(end, lang) : labels.present}`;
+
+// Roles with a single highlight are older ones: shown compactly to keep the CV to two pages.
+const mainJobs = experience.filter((j) => j.highlights[lang].length > 1);
+const earlierJobs = experience.filter((j) => j.highlights[lang].length <= 1);
+const liveProjects = projects.filter((p) => p.status === 'live' && p.repo);
+const strip = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+// The site's own project card says "This website." / "Este sitio.", which reads oddly on a CV.
+const projectText = (text: string) => text.replace(/^(This website|Este sitio)\.\s*/, '');
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{profile.name} — {labels.title}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style is:global>
+      @page { size: Letter; margin: 0.5in 0; }
+      @page :first { margin-top: 0; }
+      :root {
+        /* Brand palette (same as the site) */
+        --ink-black: #011627;
+        --hot-fuchsia: #ff3366;
+        --sea-green: #2ec4b6;
+        --bright-snow: #f6f7f8;
+        --blue-bell: #20a4f3;
+        /* Deeper shades of the palette for small text on white paper (WCAG AA ≥ 4.5:1) */
+        --sea-deep: #0a6e66;
+        --blue-deep: #0b6fae;
+
+        --text: #1f2a37;
+        --muted: #4b5866;
+        --rule: #dfe3e8;
+        --font: 'Nunito Variable', 'Nunito', ui-sans-serif, system-ui, sans-serif;
+        --display: 'Oswald Variable', 'Oswald', 'Arial Narrow', sans-serif;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+      * { box-sizing: border-box; }
+      html { background: #d9dee4; }
+      body {
+        margin: 0 auto; max-width: 8.5in; padding: 0 0.55in; background: #fff; color: var(--text);
+        font-family: var(--font); font-size: 9.6pt; line-height: 1.45;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      @media screen { body { padding-bottom: 0.5in; box-shadow: 0 10px 40px #0002; } }
+      @media print { html { background: #fff; } }
+      a { color: inherit; text-decoration: none; }
+      h1, h2, h3 { margin: 0; font-family: var(--display); color: var(--ink-black); }
+
+      .cv-header {
+        position: relative; background: var(--ink-black); color: var(--bright-snow);
+        margin: 0 -0.55in 0.22in; padding: 0.4in 0.55in 0.3in;
+        display: grid; grid-template-columns: auto 1fr; gap: 0.22in; align-items: center;
+      }
+      .cv-header::after {
+        content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 0.06in;
+        background: linear-gradient(90deg, var(--hot-fuchsia) 0 33%, var(--sea-green) 33% 66%, var(--blue-bell) 66%);
+      }
+      .mark {
+        width: 0.66in; height: 0.66in; border-radius: 0.13in; display: grid; place-items: center;
+        background: var(--sea-green); color: var(--ink-black); font-family: var(--display); font-weight: 600; font-size: 19pt;
+      }
+      .cv-header h1 { color: var(--bright-snow); font-size: 26pt; font-weight: 600; line-height: 1.05; letter-spacing: 0.01em; }
+      .headline { margin: 0.05in 0 0.08in; color: var(--sea-green); font-family: var(--display); font-weight: 400; font-size: 12.5pt; letter-spacing: 0.01em; }
+      .contact { display: flex; flex-wrap: wrap; gap: 0.02in 0.16in; margin: 0; padding: 0; list-style: none; font-size: 8.6pt; color: #c9d2dc; }
+      .contact li::before { content: '▸ '; color: var(--hot-fuchsia); }
+
+      section { margin-bottom: 0.17in; }
+      h2 {
+        display: flex; align-items: center; gap: 0.08in;
+        font-size: 12pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+        border-bottom: 1.5px solid var(--rule); padding-bottom: 0.03in; margin-bottom: 0.08in;
+        break-after: avoid;
+      }
+      h2::before { content: ''; width: 0.06in; height: 0.16in; border-radius: 1px; background: var(--hot-fuchsia); }
+      p { margin: 0; }
+
+      .skills { display: grid; grid-template-columns: 1.25in 1fr; gap: 0.03in 0.12in; margin: 0; }
+      .skills dt { font-weight: 800; color: var(--ink-black); }
+      .skills dd { margin: 0; color: var(--muted); }
+
+      .job { margin-bottom: 0.13in; break-inside: avoid; }
+      .job-head { display: flex; justify-content: space-between; gap: 0.2in; align-items: baseline; }
+      .job h3 { font-size: 11.5pt; font-weight: 500; letter-spacing: 0.01em; }
+      .company { color: var(--sea-deep); }
+      .dates { white-space: nowrap; color: var(--muted); font-size: 8.8pt; font-variant-numeric: tabular-nums; }
+      .place { color: var(--muted); font-size: 8.8pt; margin: 0.01in 0 0.04in; }
+      .job ul { margin: 0; padding-left: 0.17in; }
+      .job li { margin-bottom: 0.025in; }
+      .job li::marker { color: var(--sea-green); }
+      .chips { display: flex; flex-wrap: wrap; gap: 0.04in; margin: 0.05in 0 0; padding: 0; list-style: none; }
+      .chips li {
+        font-family: var(--mono); font-size: 7.4pt; padding: 0.01in 0.06in; border-radius: 0.04in;
+        background: color-mix(in srgb, var(--sea-green) 16%, white); color: var(--ink-black);
+      }
+
+      .earlier { list-style: none; margin: 0; padding: 0; }
+      .earlier li { display: grid; grid-template-columns: 1fr auto; gap: 0 0.2in; margin-bottom: 0.07in; break-inside: avoid; }
+      .earlier strong { font-family: var(--display); font-weight: 500; font-size: 10.5pt; color: var(--ink-black); }
+      .earlier .what { color: var(--muted); grid-column: 1 / -1; }
+
+      .two-col { display: grid; grid-template-columns: 1.35fr 1fr; gap: 0.3in; break-inside: avoid; }
+      .list { list-style: none; margin: 0; padding: 0; }
+      .list li { margin-bottom: 0.05in; }
+      .list strong { color: var(--ink-black); font-weight: 800; }
+      .list span { color: var(--muted); }
+      .projects li { margin-bottom: 0.06in; }
+      .projects a { color: var(--blue-deep); font-family: var(--mono); font-size: 8.2pt; }
+    </style>
+  </head>
+  <body>
+    <header class="cv-header">
+      <div class="mark" aria-hidden="true">{profile.initials}</div>
+      <div>
+        <h1>{profile.name}</h1>
+        <p class="headline">{profile.headline[lang]}</p>
+        <ul class="contact">
+          <li>{profile.location[lang]}</li>
+          <li><a href={`tel:${profile.phone.replace(/\s/g, '')}`}>{profile.phone}</a></li>
+          <li><a href={`mailto:${profile.email}`}>{profile.email}</a></li>
+          <li><a href={profile.linkedin}>{strip(profile.linkedin)}</a></li>
+          <li><a href={profile.github}>{strip(profile.github)}</a></li>
+          <li><a href={profile.website}>{strip(profile.website)}</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <h2>{labels.profile}</h2>
+        <p>{profile.summary[lang]}</p>
+      </section>
+
+      <section>
+        <h2>{labels.skills}</h2>
+        <dl class="skills">
+          {skills.map((g) => (
+            <>
+              <dt>{g.group[lang]}</dt>
+              <dd>{g.items.join(' · ')}</dd>
+            </>
+          ))}
+        </dl>
+      </section>
+
+      <section>
+        <h2>{labels.experience}</h2>
+        {mainJobs.map((job) => (
+          <article class="job">
+            <div class="job-head">
+              <h3>{job.role[lang]} · <span class="company">{job.company}</span></h3>
+              <span class="dates">{range(job.start, job.end)}</span>
+            </div>
+            <p class="place">{job.place[lang]}</p>
+            <ul>{job.highlights[lang].map((h) => <li>{h}</li>)}</ul>
+            <ul class="chips" aria-label={labels.stack}>{job.stack.map((s) => <li>{s}</li>)}</ul>
+          </article>
+        ))}
+      </section>
+
+      <section>
+        <h2>{labels.earlier}</h2>
+        <ul class="earlier">
+          {earlierJobs.map((job) => (
+            <li>
+              <strong>{job.role[lang]} · <span class="company">{job.company}</span></strong>
+              <span class="dates">{range(job.start, job.end)}</span>
+              <span class="what">{job.highlights[lang][0]}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div class="two-col">
+        <section>
+          <h2>{labels.certs}</h2>
+          <ul class="list">
+            {certifications.map((c) => <li><strong>{c.name}</strong> <span>· {c.issuer}</span></li>)}
+          </ul>
+        </section>
+        <section>
+          <h2>{labels.languages}</h2>
+          <ul class="list">
+            {languages.map((l) => <li><strong>{l.name[lang]}</strong> <span>· {l.level[lang]}</span></li>)}
+          </ul>
+        </section>
+      </div>
+
+      <section>
+        <h2>{labels.projects}</h2>
+        <ul class="list projects">
+          {liveProjects.map((p) => (
+            <li><strong>{p.name}</strong> <span>— {projectText(p.description[lang])}</span><br /><a href={p.repo}>{strip(p.repo!)}</a></li>
+          ))}
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

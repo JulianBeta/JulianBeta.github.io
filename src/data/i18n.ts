@@ -81,9 +81,11 @@ export function switchLangPath(pathname: string, to: Lang): string {
 
 export function formatMonth(ym: string, lang: Lang): string {
   const [y, m] = ym.split('-').map(Number);
-  return new Date(Date.UTC(y, m - 1, 1)).toLocaleDateString(lang === 'en' ? 'en-US' : 'es-CO', {
+  const label = new Date(Date.UTC(y, m - 1, 1)).toLocaleDateString(lang === 'en' ? 'en-US' : 'es-CO', {
     month: 'short',
     year: 'numeric',
     timeZone: 'UTC',
   });
+  // es-CO gives "sept de 2026"; render "Sept 2026" to match the English style.
+  return lang === 'es' ? label.replace(' de ', ' ').replace(/^./, (c) => c.toUpperCase()) : label;
 }

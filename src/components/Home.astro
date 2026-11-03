@@ -25,7 +25,7 @@ const suite = [
       <p class="headline">{profile.headline[lang]}</p>
       <p class="location">{profile.location[lang]}</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href={profile.cv} download data-testid="cv-download">{t(lang, 'hero.cta.cv')}</a>
+        <a class="btn btn-primary" href={profile.cv[lang]} download data-testid="cv-download">{t(lang, 'hero.cta.cv')}</a>
         <a class="btn btn-ghost" href="#contact">{t(lang, 'hero.cta.contact')}</a>
       </div>
     </div>

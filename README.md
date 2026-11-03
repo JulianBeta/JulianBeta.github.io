@@ -39,4 +39,5 @@ npm test             # Playwright against the built site
 - UI strings: [`src/data/i18n.ts`](src/data/i18n.ts)
 - Blog posts: `src/content/blog/{en,es}/*.md`. Set `translation:` in the frontmatter to the slug of the other-language version so the language switch links them.
 - New routes must be added to [`tests/pages.ts`](tests/pages.ts) to get smoke + accessibility coverage.
-- CV: generated from the same `profile.ts` data. Edit the data (layout lives in `src/pages/cv.astro`), then run `npm run cv` to regenerate `public/cv/Julian-Betancourt-CV.pdf` and commit it. `tests/cv.spec.ts` keeps it to two pages.
+- CV (English + Spanish): generated from the same `profile.ts` data; layout lives in `src/components/CV.astro` (web versions at `/cv/` and `/es/cv/`). After editing, run `npm run cv` to regenerate `public/cv/Julian-Betancourt-CV.pdf` and `Julian-Betancourt-CV-ES.pdf`, then commit them. `tests/cv.spec.ts` keeps both to two pages.
+- Brand: palette Ink Black `#011627`, Hot Fuchsia `#FF3366`, Light Sea Green `#2EC4B6`, Bright Snow `#F6F7F8`, Blue Bell `#20A4F3`; fonts Oswald (headings) and Nunito (text), self-hosted via Fontsource.

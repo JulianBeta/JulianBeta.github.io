@@ -15,7 +15,7 @@ export const profile = {
   website: 'https://julianbeta.github.io',
   linkedin: 'https://www.linkedin.com/in/julian-betancourt-cuervo-a05820ab/',
   github: 'https://github.com/JulianBeta',
-  cv: '/cv/Julian-Betancourt-CV.pdf',
+  cv: { en: '/cv/Julian-Betancourt-CV.pdf', es: '/cv/Julian-Betancourt-CV-ES.pdf' } as L,
   yearsExperience: 11,
   summary: {
     en: 'I design, build and scale test automation that teams actually trust. Over 11 years I have gone from manual and Selenium suites to leading a QA Center of Excellence that standardized Playwright for E2E and API testing across client teams — and today I focus on bringing AI into testing responsibly: MCP-driven test generation, self-healing, and evaluating LLM-powered products.',

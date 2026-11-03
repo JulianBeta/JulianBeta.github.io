@@ -1,4 +1,6 @@
 ---
+import '@fontsource-variable/oswald';
+import '@fontsource-variable/nunito';
 import '../styles/global.css';
 import { profile, type Lang } from '../data/profile';
 import { t, localePath, switchLangPath } from '../data/i18n';
@@ -48,7 +50,7 @@ const href = (target: string) => (target.startsWith('#') ? `${home}${target}` : 
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'es_CO'} />
-    <meta name="theme-color" content="#0b1020" />
+    <meta name="theme-color" content="#011627" />
   </head>
   <body>
     <a class="skip" href="#main">{t(lang, 'skip')}</a>
