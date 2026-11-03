@@ -232,7 +232,7 @@ export const projects: Project[] = [
       es: 'Framework BDD para un flujo de e-commerce con Page Object Model, ejecución paralela cross-browser (Chromium, Firefox, WebKit) y reportes HTML con capturas de fallos.',
     },
     tags: ['Playwright', 'CucumberJS', 'POM', 'BDD'],
-    repo: 'https://github.com/JulianBeta/FPTLA-QATEST',
+    repo: 'https://github.com/JulianBeta/playwright-pom-saucedemo',
     status: 'live',
   },
   {
