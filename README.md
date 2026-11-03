@@ -14,6 +14,7 @@ Playwright suite against the production build, and GitHub Pages only deploys if 
 |---|---|
 | `tests/home.spec.ts` | Profile, experience and projects render; CV download is a real PDF; contact links; in-page navigation |
 | `tests/i18n.spec.ts` | Language switch round-trips EN ⇄ ES on every page type |
+| `tests/cv.spec.ts` | CV page content rules, noindex, accessibility, fits on two printed pages |
 | `tests/quality.spec.ts` | axe-core WCAG 2.1 A/AA scan, SEO metadata (canonical, hreflang, description), all internal links return 200, anchors resolve, 404 page |
 
 Runs on desktop Chromium and a mobile viewport (Pixel 7).
@@ -38,4 +39,4 @@ npm test             # Playwright against the built site
 - UI strings: [`src/data/i18n.ts`](src/data/i18n.ts)
 - Blog posts: `src/content/blog/{en,es}/*.md`. Set `translation:` in the frontmatter to the slug of the other-language version so the language switch links them.
 - New routes must be added to [`tests/pages.ts`](tests/pages.ts) to get smoke + accessibility coverage.
-- CV: `public/cv/Julian-Betancourt-CV.pdf`
+- CV: generated from the same `profile.ts` data. Edit the data (layout lives in `src/pages/cv.astro`), then run `npm run cv` to regenerate `public/cv/Julian-Betancourt-CV.pdf` and commit it. `tests/cv.spec.ts` keeps it to two pages.

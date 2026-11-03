@@ -11,6 +11,8 @@ export const profile = {
   } as L,
   location: { en: 'Bogotá, Colombia · Remote', es: 'Bogotá, Colombia · Remoto' } as L,
   email: 'carramplancha@gmail.com',
+  phone: '+57 300 682 2639', // CV only
+  website: 'https://julianbeta.github.io',
   linkedin: 'https://www.linkedin.com/in/julian-betancourt-cuervo-a05820ab/',
   github: 'https://github.com/JulianBeta',
   cv: '/cv/Julian-Betancourt-CV.pdf',
@@ -70,6 +72,8 @@ export const experience: Job[] = [
         'Led the QA Center of Excellence, defining the quality roadmap across multiple client-facing product teams.',
         'Pioneered Playwright MCP for AI-assisted test generation and self-healing scripts, cutting maintenance by 30%.',
         'Architected a Playwright API layer validating Auth0 OAuth 2.0/OIDC token exchanges and RBAC across microservices.',
+        'Integrated API security checks into CI/CD: token expiry, signature validation and unauthorized redirect-URI prevention.',
+        'Implemented Page Object Model and Screenplay patterns in TypeScript for large, maintainable enterprise suites.',
         'Founded "QA Forums" to mentor junior and mid-level engineers and raise technical maturity.',
       ],
       es: [
@@ -77,6 +81,8 @@ export const experience: Job[] = [
         'Lideré el Centro de Excelencia de QA, definiendo la hoja de ruta de calidad para múltiples equipos de producto.',
         'Impulsé Playwright MCP para generación de pruebas asistida por IA y scripts self-healing, reduciendo el mantenimiento un 30%.',
         'Diseñé una capa de pruebas de API en Playwright para validar intercambios de tokens OAuth 2.0/OIDC de Auth0 y RBAC en microservicios.',
+        'Integré pruebas de seguridad de API en CI/CD: expiración de tokens, validación de firmas y prevención de redirect URI no autorizados.',
+        'Implementé los patrones Page Object Model y Screenplay en TypeScript para suites empresariales grandes y mantenibles.',
         'Fundé "QA Forums" para mentorear ingenieros junior y semi-senior y elevar la madurez técnica.',
       ],
     },
@@ -256,4 +262,9 @@ export const projects: Project[] = [
     tags: ['Playwright API', 'OAuth 2.0', 'OIDC', 'RBAC'],
     status: 'wip',
   },
+];
+
+export const languages: { name: L; level: L }[] = [
+  { name: { en: 'Spanish', es: 'Español' }, level: { en: 'Native', es: 'Nativo' } },
+  { name: { en: 'English', es: 'Inglés' }, level: { en: 'Fluent (professional)', es: 'Fluido (profesional)' } },
 ];
