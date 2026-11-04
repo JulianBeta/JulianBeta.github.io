@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { expectFontLoaded } from './fonts';
 
 test.describe('Home page', () => {
   test('renders profile, experience and projects in English', async ({ page }) => {
@@ -15,6 +16,8 @@ test.describe('Home page', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-family', /Oswald/);
     await expect(page.locator('#about-title')).toHaveCSS('font-family', /Oswald/);
     await expect(page.locator('.lead').first()).toHaveCSS('font-family', /Nunito/);
+    await expectFontLoaded(page, 'Oswald Variable');
+    await expectFontLoaded(page, 'Nunito Variable');
   });
 
   test('renders in Spanish under /es/', async ({ page }) => {

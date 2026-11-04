@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { expectFontLoaded } from './fonts';
 
 const cvs = [
   { path: '/cv/', lang: 'en', present: 'Present', certs: /Certifications/ },
@@ -29,9 +30,8 @@ for (const { path, lang, present, certs } of cvs) {
 
     test('uses the brand fonts', async ({ page }) => {
       await page.goto(path);
-      await page.evaluate(() => document.fonts.ready);
-      expect(await page.evaluate(() => document.fonts.check('600 12pt "Oswald Variable"'))).toBe(true);
-      expect(await page.evaluate(() => document.fonts.check('400 10pt "Nunito Variable"'))).toBe(true);
+      await expectFontLoaded(page, 'Oswald Variable');
+      await expectFontLoaded(page, 'Nunito Variable');
       await expect(page.locator('h2').first()).toHaveCSS('font-family', /Oswald/);
       await expect(page.locator('main p').first()).toHaveCSS('font-family', /Nunito/);
     });
