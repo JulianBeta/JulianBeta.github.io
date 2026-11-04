@@ -5,6 +5,7 @@ its date; findings are tracked here until fixed.
 
 | Date | Scope | Critical | High | Medium | Low | Nit | Report |
 |---|---|---:|---:|---:|---:|---:|---|
+| 2026-11-04 | Changes since baseline (`e15a9a2..c751b16`) | 0 | 0 | 0 | 3 | 4 | [2026-11-04-changes-since-baseline.md](2026-11-04-changes-since-baseline.md) |
 | 2026-11-04 | Whole repository (baseline) | 0 | 0 | 6 | 6 | 5 | [2026-11-04-baseline.md](2026-11-04-baseline.md) |
 
 ## Triage
@@ -29,3 +30,18 @@ it found files only by following imports. It missed `tests/brand.spec.ts` and `t
 | R-14 | **fixed** | "Inicio" link on the 404 page has `lang`/`hreflang` (`ddfdcef`). |
 | R-17 | **fixed** | `npm run cv` runs the type-checked build first. |
 | R-07, R-08, R-10 – R-13, R-15, R-16 | open | Not yet triaged in detail. |
+
+### 2026-11-04 changes since baseline
+
+First run of the real `code-reviewer` agent (with Glob/Grep). It verified the fixes for R-01, R-02, R-05, R-06, R-14
+and R-17, and R-09 as partly fixed.
+
+| ID | Status | Note |
+|---|---|---|
+| R-18 | **partial** | README now says the freshness check covers the CV *text*; extending the fingerprint to styles/links is open. |
+| R-19 | open | 404 test should assert the switch `href` and `lang="es"` directly. |
+| R-20 | open | `build-cv.mjs`: fail fast if the server exits; check page count before writing. |
+| R-21 | open | Import `MANIFEST` in the test instead of repeating the path. |
+| R-22 | open | Run device-independent CV checks on one project only. |
+| R-23 | open | Drop `og:url` on `noindex` pages. |
+| R-24 | **fixed** | README test table lists the font and committed-PDF checks. |
