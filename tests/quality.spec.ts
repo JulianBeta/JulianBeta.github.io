@@ -48,6 +48,15 @@ for (const { path, lang } of pages) {
   });
 }
 
+test('the 404 page links somewhere real and is not indexed', async ({ page, request }) => {
+  await page.goto('/this-page-does-not-exist/');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
+  await expect(page.locator('link[rel="canonical"], link[rel="alternate"][hreflang]')).toHaveCount(0);
+  const hrefs = await page.locator('main a[href], [data-testid="lang-switch"]').evaluateAll((as) => as.map((a) => (a as HTMLAnchorElement).href));
+  expect(hrefs).toContain(new URL('/es/', page.url()).href);
+  for (const href of new Set(hrefs)) expect.soft((await request.get(href)).status(), href).toBe(200);
+});
+
 test('unknown routes return the 404 page', async ({ request }) => {
   const res = await request.get('/this-page-does-not-exist/');
   expect(res.status()).toBe(404);

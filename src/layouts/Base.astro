@@ -13,9 +13,11 @@ interface Props {
   description?: string;
   /** Path of this page in the other language, when it can't be derived from the URL. */
   altPath?: string;
+  /** Error and utility pages: tell search engines not to index them, and skip canonical/alternates. */
+  noindex?: boolean;
 }
 
-const { lang, title, description = profile.summary[lang], altPath } = Astro.props;
+const { lang, title, description = profile.summary[lang], altPath, noindex = false } = Astro.props;
 const pageTitle = title ? `${title} · ${profile.name}` : `${profile.name} — ${profile.headline[lang]}`;
 const other: Lang = lang === 'en' ? 'es' : 'en';
 const path = Astro.url.pathname;
@@ -42,10 +44,16 @@ const href = (target: string) => (target.startsWith('#') ? `${home}${target}` : 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="en" href={altEn} />
-    <link rel="alternate" hreflang="es" href={altEs} />
-    <link rel="alternate" hreflang="x-default" href={altEn} />
+    {noindex ? (
+      <meta name="robots" content="noindex" />
+    ) : (
+      <>
+        <link rel="canonical" href={canonical} />
+        <link rel="alternate" hreflang="en" href={altEn} />
+        <link rel="alternate" hreflang="es" href={altEs} />
+        <link rel="alternate" hreflang="x-default" href={altEn} />
+      </>
+    )}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

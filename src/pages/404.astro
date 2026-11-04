@@ -2,12 +2,13 @@
 import Base from '../layouts/Base.astro';
 ---
 
-<Base lang="en" title="404">
+<!-- There is one 404 page for both languages, so the language switch goes to the Spanish home page. -->
+<Base lang="en" title="404" altPath="/es/" noindex>
   <section class="section">
     <div class="container narrow center">
       <h1>404 · <span class="fail">✗</span> expected page, received nothing</h1>
       <p class="lead">This test didn't pass. Let's go back to a known good state.</p>
-      <p><a class="btn btn-primary" href="/">Home</a> <a class="btn btn-ghost" href="/es/">Inicio</a></p>
+      <p><a class="btn btn-primary" href="/">Home</a> <a class="btn btn-ghost" href="/es/" lang="es" hreflang="es">Inicio</a></p>
     </div>
   </section>
 </Base>
