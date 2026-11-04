@@ -1,0 +1,10 @@
+{
+  "Julian-Betancourt-CV.pdf": {
+    "source": "/cv/",
+    "textSha256": "f4920dd7e91479960a301a39410a4b729127967fed3b8ef0b3072f0e15f9a211"
+  },
+  "Julian-Betancourt-CV-ES.pdf": {
+    "source": "/es/cv/",
+    "textSha256": "e9f6c8cb4a9a6e08c9f8e91874cc198d75a30728fd743012cc9b670d3f056b6b"
+  }
+}

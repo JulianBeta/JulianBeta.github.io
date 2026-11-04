@@ -1,38 +1,41 @@
-// Exports the /cv/ (English) and /es/cv/ (Spanish) pages to PDFs in public/cv/.
-// Usage: npm run cv   (builds the site first, then prints with Chromium)
+// Exports the /cv/ (English) and /es/cv/ (Spanish) pages to PDFs in public/cv/, and records each page's text
+// fingerprint in public/cv/cv-manifest.json so the tests can tell when the committed PDFs are out of date.
+// Usage: npm run cv   (type-checks and builds the site first, then prints with Chromium)
 import { spawn } from 'node:child_process';
-import { copyFileSync } from 'node:fs';
+import { copyFileSync, writeFileSync } from 'node:fs';
 import { chromium } from '@playwright/test';
+import { CVS, MANIFEST, cvFingerprint } from './cv-fingerprint.mjs';
 
 const PORT = 4330;
-const CVS = [
-  { path: '/cv/', out: 'public/cv/Julian-Betancourt-CV.pdf' },
-  { path: '/es/cv/', out: 'public/cv/Julian-Betancourt-CV-ES.pdf' },
-];
+const base = `http://localhost:${PORT}`;
 
-const server = spawn('npx', ['astro', 'preview', '--port', String(PORT), '--ignore-lock'], { stdio: 'ignore' });
+// Server errors (port in use, missing dist/) are shown instead of surfacing later as a vague timeout.
+const server = spawn('npx', ['astro', 'preview', '--port', String(PORT), '--ignore-lock'], { stdio: ['ignore', 'ignore', 'inherit'] });
+let browser;
 try {
-  const base = `http://localhost:${PORT}`;
-  const url = `${base}/cv/`;
   for (let i = 0; ; i++) {
     try {
-      if ((await fetch(url)).ok) break;
+      if ((await fetch(`${base}/cv/`)).ok) break;
     } catch {}
-    if (i > 60) throw new Error(`Preview server did not start on ${url}`);
+    if (i > 60) throw new Error(`Preview server did not start on ${base}`);
     await new Promise((r) => setTimeout(r, 250));
   }
-  const browser = await chromium.launch();
+  browser = await chromium.launch();
   const page = await browser.newPage();
   await page.emulateMedia({ media: 'print' });
+  const manifest = {};
   for (const { path, out } of CVS) {
     await page.goto(`${base}${path}`, { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
     await page.pdf({ path: out, format: 'Letter', printBackground: true, preferCSSPageSize: true, tagged: true, outline: true });
+    manifest[out.split('/').pop()] = { source: path, textSha256: await cvFingerprint(page) };
     // Also refresh the already-built site so `astro preview` / tests serve the new PDF.
     copyFileSync(out, out.replace(/^public\//, 'dist/'));
     console.log(`CV written to ${out}`);
   }
-  await browser.close();
+  writeFileSync(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
+  copyFileSync(MANIFEST, MANIFEST.replace(/^public\//, 'dist/'));
 } finally {
+  await browser?.close();
   server.kill();
 }

@@ -1,6 +1,8 @@
+import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { expectFontLoaded } from './fonts';
+import { CVS, cvFingerprint } from '../scripts/cv-fingerprint.mjs';
 
 const cvs = [
   { path: '/cv/', lang: 'en', present: 'Present', certs: /Certifications/ },
@@ -57,3 +59,26 @@ for (const { path, lang, present, certs } of cvs) {
     });
   });
 }
+
+// The PDFs visitors download are committed files produced by `npm run cv`. These tests fail when they no longer
+// match the current CV page, or when the committed file itself is longer than two pages.
+test.describe('committed CV PDFs', () => {
+  const manifest = JSON.parse(readFileSync('public/cv/cv-manifest.json', 'utf8'));
+
+  for (const { path, out } of CVS) {
+    const file = out.split('/').pop()!;
+
+    test(`${file} is up to date with ${path} (run "npm run cv" if this fails)`, async ({ page }) => {
+      await page.goto(path);
+      await page.emulateMedia({ media: 'print' });
+      expect(manifest[file]?.textSha256, `${file} fingerprint`).toBe(await cvFingerprint(page));
+    });
+
+    test(`${file} as committed fits on two pages`, async ({ request }) => {
+      const pdf = await (await request.get(`/cv/${file}`)).body();
+      const pages = pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? [];
+      expect(pages.length, 'page objects found').toBeGreaterThan(0);
+      expect(pages.length).toBeLessThanOrEqual(2);
+    });
+  }
+});

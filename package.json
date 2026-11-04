@@ -8,7 +8,7 @@
     "preview": "astro preview --port 4321",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "cv": "astro build && node scripts/build-cv.mjs"
+    "cv": "npm run build && node scripts/build-cv.mjs"
   },
   "type": "module",
   "dependencies": {
