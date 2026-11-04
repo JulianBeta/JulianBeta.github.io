@@ -9,3 +9,6 @@ planning/
 # Brand source kit (only the assets in use are copied to public/)
 brand/
 JBLogos.zip
+
+# Claude Code: personal, machine-specific settings stay local
+.claude/settings.local.json
