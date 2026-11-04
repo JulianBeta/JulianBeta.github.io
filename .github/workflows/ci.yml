@@ -6,14 +6,14 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Least privilege: only the deploy job gets Pages permissions.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
+# A newer run replaces an older one on pull requests, but a deploy to main is never cut off mid-way.
 concurrency:
   group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:
@@ -37,6 +37,7 @@ jobs:
           path: playwright-report/
           retention-days: 14
       - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         with:
           path: dist/
 
@@ -45,6 +46,9 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
