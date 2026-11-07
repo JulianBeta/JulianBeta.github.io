@@ -5,6 +5,7 @@ its date; findings are tracked here until fixed.
 
 | Date | Scope | Critical | High | Medium | Low | Nit | Report |
 |---|---|---:|---:|---:|---:|---:|---|
+| 2026-11-07 | Hero, Inspect mode and design system changes (uncommitted) | 0 | 1 | 6 | 5 | 5 | [2026-11-07-hero-design-system.md](2026-11-07-hero-design-system.md) |
 | 2026-11-04 | Changes since baseline (`e15a9a2..c751b16`) | 0 | 0 | 0 | 3 | 4 | [2026-11-04-changes-since-baseline.md](2026-11-04-changes-since-baseline.md) |
 | 2026-11-04 | Whole repository (baseline) | 0 | 0 | 6 | 6 | 5 | [2026-11-04-baseline.md](2026-11-04-baseline.md) |
 
@@ -45,3 +46,25 @@ and R-17, and R-09 as partly fixed.
 | R-22 | open | Run device-independent CV checks on one project only. |
 | R-23 | open | Drop `og:url` on `noindex` pages. |
 | R-24 | **fixed** | README test table lists the font and committed-PDF checks. |
+
+### 2026-11-07 hero and design system
+
+IDs here restart at R-01 and refer only to this report. The tests added for these fixes ran against the fixed code; they were not run against the old code.
+
+| ID | Status | Note |
+|---|---|---|
+| R-01 | **fixed** | Header `nav` rules scoped to `.site-header`; table of contents tested on both projects. |
+| R-02 | **fixed** | Reduced motion covers `.ds-example`; the scroll cue now bobs twice and stops; tested. |
+| R-03 | **fixed** | Solid 3px focus ring on inspect targets; tested after Esc. |
+| R-04 | **fixed** | `aria-live` removed from the panels. A status element was tried and dropped: its copy of the text broke the offered locator. Not checked with a real screen reader. |
+| R-05 | **fixed** | Copy and the language switch are 44px; the rule now exempts links in text and lists; tested. |
+| R-06 | **fixed** | Type requires `markup` or `usage`; the test checks count and non-empty code. |
+| R-07 | **fixed** | Docs copy changed: Light is a reference palette and the drift claim covers dark only. The CV's colors were left as they are. |
+| R-08 | **fixed** | Esc returns focus to the selected role; tested. |
+| R-09 | **fixed** | Outlines require `html.js`; tested. |
+| R-10 | **fixed** | Hero chips marked `lang="en"`; Voice rule now keeps skill tags in English. |
+| R-11 | **fixed** | Code blocks have `role="group"`. |
+| R-12 | **fixed** | Exact group names and a `textTarget` helper replace the regex and XPath. |
+| R-13 – R-17 | **fixed** | Copy key moved, dead key removed, CTA icon nudges once, hint says "outlined element", logo count read from the data. |
+| Needs verification 1 | **partial** | Tip opening on `mouseover` limited to `(hover: hover)` devices, which removes the suspected cause. Not tested on a real iPhone or in WebKit. |
+| Needs verification 2 | **fixed** | The open target is raised; tested with a tip flipped below. |

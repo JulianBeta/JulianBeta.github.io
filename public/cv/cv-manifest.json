@@ -1,10 +1,10 @@
 {
   "Julian-Betancourt-CV.pdf": {
     "source": "/cv/",
-    "textSha256": "f4920dd7e91479960a301a39410a4b729127967fed3b8ef0b3072f0e15f9a211"
+    "textSha256": "63830223406b2cd262507ed288b834a48c0645ffa2920c7d3dfaf88f59742515"
   },
   "Julian-Betancourt-CV-ES.pdf": {
     "source": "/es/cv/",
-    "textSha256": "e9f6c8cb4a9a6e08c9f8e91874cc198d75a30728fd743012cc9b670d3f056b6b"
+    "textSha256": "55a4c2c769c58bc856c4efc770b814c7b4ebe43ed5238ad1ebf34ac1e28599a9"
   }
 }

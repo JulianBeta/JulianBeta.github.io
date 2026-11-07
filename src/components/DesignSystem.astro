@@ -1,0 +1,290 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import SocialLinks from './SocialLinks.astro';
+import type { Lang } from '../data/profile';
+import { components, contrast, contrastPairs, logos, motion, pageCopy, resolveColor, retired, siteVars, tokens, type Theme } from '../data/design-system';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = pageCopy[lang];
+
+const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+/** Copy is plain text with `code` spans. */
+const md = (text: string) => escape(text).replace(/`([^`]+)`/g, '<code>$1</code>');
+
+const familyVars: Record<string, string> = { display: 'var(--display)', sans: 'var(--font)', mono: 'var(--mono)' };
+const themes: Theme[] = ['dark', 'light'];
+const swatchFor = (name: string) => themes.map((theme) => ({ theme, value: resolveColor(name, theme) }));
+const shadow = (tokens.shadow.tokens[0].value as Record<Theme, string>).dark;
+const componentGroups = Object.entries(c.components.groups) as [keyof typeof c.components.groups, string][];
+const toc = [
+  ['ds-voice', c.voice.title],
+  ['ds-logo', c.logo.title],
+  ['ds-color', c.color.title],
+  ['ds-contrast', c.contrast.title],
+  ['ds-type', c.type.title],
+  ['ds-spacing', c.spacing.title],
+  ['ds-radius', c.radius.title],
+  ['ds-elevation', c.elevation.title],
+  ['ds-motion', c.motion.title],
+  ['ds-icons', c.icons.title],
+  ['ds-a11y', c.a11y.title],
+  ['ds-components', c.components.title],
+  ['ds-patterns', c.patterns.title],
+  ['ds-retired', c.retired.title],
+];
+---
+
+<Base lang={lang} title={c.title} description={c.description}>
+  <div class="container ds">
+    <header class="ds-head">
+      <h1>{c.title}</h1>
+      <p class="lead">{c.intro}</p>
+      <p class="eyebrow">{c.version} {tokens.version}</p>
+    </header>
+
+    <nav class="ds-toc" aria-label={c.toc}>
+      <ul>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ul>
+    </nav>
+
+    <section id="ds-voice" aria-labelledby="ds-voice-t">
+      <h2 id="ds-voice-t">{c.voice.title}</h2>
+      <ul class="ds-list">{c.voice.items.map((item) => <li set:html={md(item)} />)}</ul>
+    </section>
+
+    <section id="ds-logo" aria-labelledby="ds-logo-t">
+      <h2 id="ds-logo-t">{c.logo.title}</h2>
+      <p>{c.logo.intro}</p>
+      <ul class="ds-list">{c.logo.rules.map((rule) => <li>{rule}</li>)}</ul>
+      <ul class="ds-logos">
+        {logos.map((logo) => (
+          <li>
+            <span class:list={['ds-logo-tile', { 'is-light': logo.ground === 'light' }]}><img src={`/img/logos/${logo.file}`} alt="" width="56" height="56" loading="lazy" /></span>
+            <code>{logo.file}</code>
+            <span class="ds-note">{logo.use[lang]}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section id="ds-color" aria-labelledby="ds-color-t">
+      <h2 id="ds-color-t">{c.color.title}</h2>
+      <p set:html={md(c.color.intro)} />
+      <p set:html={md(c.color.naming)} />
+      {c.tokenUsageNote && <p class="ds-note">{c.tokenUsageNote}</p>}
+      <div class="ds-table-wrap" tabindex="0" role="region" aria-label={c.color.title}>
+        <table class="ds-table">
+          <thead><tr><th scope="col">{c.color.token}</th><th scope="col">{c.color.dark}</th><th scope="col">{c.color.light}</th><th scope="col">{c.color.variable}</th><th scope="col">{c.color.usage}</th></tr></thead>
+          <tbody>
+            {tokens.color.tokens.map((token) => (
+              <tr data-color-token={token.name} data-site-var={siteVars[token.name]} data-dark={resolveColor(token.name, 'dark')}>
+                <th scope="row"><code>{token.name}</code></th>
+                {swatchFor(token.name).map(({ value }) => (
+                  <td><span class="ds-swatch" style={`--swatch: ${value}`}></span><code>{value}</code></td>
+                ))}
+                <td><code>{siteVars[token.name]}</code></td>
+                <td lang="en">{token.usage}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="ds-contrast" aria-labelledby="ds-contrast-t">
+      <h2 id="ds-contrast-t">{c.contrast.title}</h2>
+      <p set:html={md(c.contrast.intro)} />
+      <div class="ds-table-wrap" tabindex="0" role="region" aria-label={c.contrast.title}>
+        <table class="ds-table">
+          <thead><tr><th scope="col">{c.contrast.pair}</th><th scope="col">{c.color.dark}</th><th scope="col">{c.color.light}</th></tr></thead>
+          <tbody>
+            {contrastPairs.map(([fg, bg]) => (
+              <tr>
+                <th scope="row"><code>{fg}</code> / <code>{bg}</code></th>
+                {themes.map((theme) => {
+                  const ratio = contrast(fg, bg, theme);
+                  return <td data-contrast={Math.floor(ratio * 100) / 100}>{ratio.toFixed(1)}:1</td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="ds-type" aria-labelledby="ds-type-t">
+      <h2 id="ds-type-t">{c.type.title}</h2>
+      <p>{c.type.intro}</p>
+      {c.tokenUsageNote && <p class="ds-note">{c.tokenUsageNote}</p>}
+      {tokens.type.groups.map((group) => (
+        <>
+          <h3>{group.name}</h3>
+          <ul class="ds-type">
+            {group.styles.map((style) => {
+              const s = style as typeof style & { letterSpacing?: string; sample?: string; usage?: string };
+              return (
+                <li data-type-style={s.name}>
+                  <span class="ds-type-sample" style={`font-family: ${familyVars[group.family]}; font-size: min(${s.fontSize}, 13vw); line-height: ${s.lineHeight}; font-weight: ${s.fontWeight}; letter-spacing: ${s.letterSpacing ?? 'normal'}`}>{s.sample ?? c.type.sample}</span>
+                  <span class="ds-note"><code>{s.name}</code> · {s.fontSize} / {s.lineHeight} / {s.fontWeight}{s.letterSpacing && ` / ${s.letterSpacing}`}</span>
+                  <span class="ds-note" lang="en">{s.usage}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      ))}
+    </section>
+
+    <section id="ds-spacing" aria-labelledby="ds-spacing-t">
+      <h2 id="ds-spacing-t">{c.spacing.title}</h2>
+      <p class="ds-note" lang="en">{tokens.spacing.note}</p>
+      <div class="ds-table-wrap" tabindex="0" role="region" aria-label={c.spacing.title}>
+        <table class="ds-table">
+          <thead><tr><th scope="col">{c.spacing.name}</th><th scope="col">{c.spacing.value}</th><th scope="col">{c.spacing.usage}</th></tr></thead>
+          <tbody>
+            {tokens.spacing.tokens.map((token) => (
+              <tr data-token={token.name}><th scope="row"><code>{token.name}</code></th><td><code>{token.value}</code></td><td lang="en">{token.usage}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="ds-radius" aria-labelledby="ds-radius-t">
+      <h2 id="ds-radius-t">{c.radius.title}</h2>
+      <ul class="ds-radii">
+        {tokens.radius.tokens.map((token) => (
+          <li data-token={token.name}>
+            <span class="ds-radius-box" style={`border-radius: ${token.value}`}></span>
+            <code>{token.name}</code> · <code>{token.value}</code>
+            <span class="ds-note" lang="en">{token.usage}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section id="ds-elevation" aria-labelledby="ds-elevation-t">
+      <h2 id="ds-elevation-t">{c.elevation.title}</h2>
+      <p>{c.elevation.intro}</p>
+      <div class="ds-shadow" style={`box-shadow: ${shadow}`} data-token="shadow-float"><code>shadow-float</code></div>
+      <p class="ds-note" lang="en">{tokens.shadow.tokens[0].usage}</p>
+    </section>
+
+    <section id="ds-motion" aria-labelledby="ds-motion-t">
+      <h2 id="ds-motion-t">{c.motion.title}</h2>
+      <p set:html={md(c.motion.intro)} />
+      <div class="ds-table-wrap" tabindex="0" role="region" aria-label={c.motion.title}>
+        <table class="ds-table">
+          <thead><tr><th scope="col">{c.motion.name}</th><th scope="col">{c.motion.value}</th><th scope="col">{c.motion.usage}</th></tr></thead>
+          <tbody>
+            {motion.map((m) => <tr><th scope="row"><code>{m.name}</code></th><td><code>{m.value}</code></td><td>{m.use[lang]}</td></tr>)}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="ds-icons" aria-labelledby="ds-icons-t">
+      <h2 id="ds-icons-t">{c.icons.title}</h2>
+      <p set:html={md(c.icons.intro)} />
+      <ul class="ds-icons">
+        {['download', 'mail', 'brand-github', 'brand-linkedin', 'arrow-up-right', 'chevron-down'].map((name) => <li><Icon name={name} size="1.5rem" /><code>{name}</code></li>)}
+      </ul>
+    </section>
+
+    <section id="ds-a11y" aria-labelledby="ds-a11y-t">
+      <h2 id="ds-a11y-t">{c.a11y.title}</h2>
+      <ul class="ds-list">{c.a11y.items.map((item) => <li set:html={md(item)} />)}</ul>
+    </section>
+
+    <section id="ds-components" aria-labelledby="ds-components-t">
+      <h2 id="ds-components-t">{c.components.title}</h2>
+      {componentGroups.map(([group, label]) => (
+        <>
+          <h3 class="ds-group">{label}</h3>
+          {components.filter((doc) => doc.group === group).map((doc) => (
+            <article class="ds-component" data-component={doc.id}>
+              <h4>{doc.name}</h4>
+              <p set:html={md(doc.summary[lang])} />
+              {doc.markup && <div class="ds-example" inert set:html={doc.markup(lang)} />}
+              {doc.id === 'logo' && <div class="ds-example" inert><Logo size="2.1rem" color="var(--bright-snow)" /></div>}
+              {doc.id === 'icon' && <div class="ds-example" inert><Icon name="download" size="1.5rem" /></div>}
+              {doc.id === 'social-links' && <div class="ds-example" inert><SocialLinks /></div>}
+              <pre class="ds-code" tabindex="0" role="group" aria-label={`${doc.name}: ${c.components.usage}`}><code>{doc.markup ? doc.markup(lang) : doc.usage}</code></pre>
+              <dl class="ds-meta">
+                <div><dt>{c.components.provides}</dt><dd set:html={md(doc.provides[lang])} /></div>
+                <div><dt>{c.components.tokens}</dt><dd>{doc.tokens.map((token) => <code>{token}</code>)}</dd></div>
+                <div><dt>{c.components.rules}</dt><dd><ul>{doc.rules[lang].map((rule) => <li set:html={md(rule)} />)}</ul></dd></div>
+                <div><dt>{c.components.source}</dt><dd><code>{doc.source}</code></dd></div>
+              </dl>
+            </article>
+          ))}
+        </>
+      ))}
+    </section>
+
+    <section id="ds-patterns" aria-labelledby="ds-patterns-t">
+      <h2 id="ds-patterns-t">{c.patterns.title}</h2>
+      <ul class="ds-list">{c.patterns.items.map((item) => <li set:html={md(item)} />)}</ul>
+    </section>
+
+    <section id="ds-retired" aria-labelledby="ds-retired-t">
+      <h2 id="ds-retired-t">{c.retired.title}</h2>
+      {retired.map((item) => <p data-retired={item.name}><strong>{item.name}.</strong> <span set:html={md(item.replaced[lang])} /></p>)}
+    </section>
+  </div>
+</Base>
+
+<style is:global>
+  .ds { padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .ds > section { margin-top: clamp(3rem, 7vw, 4.5rem); scroll-margin-top: 5rem; }
+  .ds h3 { margin-top: 2rem; }
+  .ds code { font-family: var(--mono); font-size: 0.85em; overflow-wrap: anywhere; }
+  .ds-head { max-width: 760px; }
+  .ds-toc { margin-top: 2rem; padding: 1rem 1.2rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-alt); }
+  .ds-toc ul { display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; list-style: none; margin: 0; padding: 0; }
+  .ds-list { max-width: 760px; padding-left: 1.1rem; }
+  .ds-list li { margin-bottom: 0.4rem; }
+  .ds-note { display: block; color: var(--muted); font-size: 0.9rem; }
+
+  .ds-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  .ds-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .ds-table th, .ds-table td { padding: 0.6rem 0.8rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+  .ds-table tbody tr:last-child > * { border-bottom: 0; }
+  .ds-table thead th { background: var(--bg-alt); font-family: var(--display); font-weight: 400; letter-spacing: 0.04em; }
+  .ds-table tbody th { font-weight: 400; white-space: nowrap; }
+  .ds-table td:not(:last-child) { white-space: nowrap; }
+  .ds-table td:last-child { min-width: 16rem; }
+  .ds-swatch { display: inline-block; width: 1.1rem; height: 1.1rem; margin-right: 0.45rem; vertical-align: -0.2em; border: 1px solid var(--muted); border-radius: 4px; background: var(--swatch); }
+
+  .ds-logos, .ds-type, .ds-radii, .ds-icons { list-style: none; margin: 1rem 0 0; padding: 0; }
+  .ds-logos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: 1rem; }
+  .ds-logo-tile { display: flex; justify-content: center; padding: 1.2rem; margin-bottom: 0.5rem; border: 1px solid var(--border); border-radius: 10px; background: var(--ink-black); }
+  .ds-logo-tile.is-light { background: var(--bright-snow); }
+  .ds-type li { padding: 1rem 0; border-bottom: 1px solid var(--border); }
+  .ds-type-sample { display: block; margin-bottom: 0.4rem; overflow-wrap: anywhere; }
+  .ds-radii { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr)); gap: 1.25rem; }
+  .ds-radius-box { display: block; height: 4rem; margin-bottom: 0.5rem; border: 1px solid var(--border); background: var(--surface); }
+  .ds-shadow { width: min(100%, 22rem); padding: 2rem; margin: 1.5rem 0 3rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--sunken-bar); text-align: center; }
+  .ds-icons { display: flex; flex-wrap: wrap; gap: 1rem 1.75rem; }
+  .ds-icons li { display: flex; align-items: center; gap: 0.5rem; }
+  .ds-icons .icon { color: var(--accent); }
+
+  .ds-group { margin-top: 3rem; font-size: 1.5rem; }
+  .ds-component { padding: 1.5rem 0; border-top: 1px solid var(--border); scroll-margin-top: 5rem; }
+  .ds-component h4 { margin: 0 0 0.4rem; font-family: var(--display); font-size: 1.15rem; font-weight: 500; letter-spacing: 0.01em; }
+  .ds-component > p { max-width: 760px; margin: 0 0 1rem; }
+  .ds-example { padding: 1.5rem; border: 1px solid var(--border); border-bottom: 0; border-radius: 10px 10px 0 0; background: var(--bg); overflow: hidden; }
+  .ds-example .chips:first-child { margin-top: 0; }
+  .ds-code { margin: 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--border); border-radius: 0 0 10px 10px; background: var(--sunken); font-size: 0.82rem; line-height: 1.6; }
+  .ds-component > .ds-code:nth-child(3) { border-radius: 10px; }
+  .ds-code code { overflow-wrap: normal; font-size: inherit; }
+  .ds-meta { display: grid; gap: 0.6rem; margin: 1rem 0 0; font-size: 0.95rem; }
+  .ds-meta dt { font-family: var(--display); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .ds-meta dd { margin: 0; }
+  .ds-meta dd > code { display: inline-block; margin-right: 0.6rem; }
+  .ds-meta ul { margin: 0; padding-left: 1.1rem; }
+</style>

@@ -5,6 +5,8 @@ import { pages } from './pages';
 for (const { path, lang } of pages) {
   test.describe(`${path}`, () => {
     test('has no WCAG A/AA accessibility violations', async ({ page }) => {
+      // Entrance animations fade text in; scanning mid-fade would report false contrast failures.
+      await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto(path);
       const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
       expect(results.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);

@@ -6,8 +6,8 @@ export const profile = {
   name: 'Julian Betancourt Cuervo',
   initials: 'JB',
   headline: {
-    en: 'Lead QA Automation Engineer · Playwright SME · AI-Assisted Testing',
-    es: 'Lead QA Automation Engineer · Playwright SME · Testing asistido por IA',
+    en: 'Senior QA Automation Engineer · Playwright SME · AI-Assisted Testing',
+    es: 'Senior QA Automation Engineer · Playwright SME · Testing asistido por IA',
   } as L,
   location: { en: 'Bogotá, Colombia · Remote', es: 'Bogotá, Colombia · Remoto' } as L,
   email: 'carramplancha@gmail.com',
@@ -16,7 +16,6 @@ export const profile = {
   linkedin: 'https://www.linkedin.com/in/julian-betancourt-cuervo-a05820ab/',
   github: 'https://github.com/JulianBeta',
   cv: { en: '/cv/Julian-Betancourt-CV.pdf', es: '/cv/Julian-Betancourt-CV-ES.pdf' } as L,
-  yearsExperience: 11,
   summary: {
     en: 'I design, build and scale test automation that teams actually trust. Over 11 years I have gone from manual and Selenium suites to leading a QA Center of Excellence that standardized Playwright for E2E and API testing across client teams — and today I focus on bringing AI into testing responsibly: MCP-driven test generation, self-healing, and evaluating LLM-powered products.',
     es: 'Diseño, construyo y escalo automatización de pruebas en la que los equipos realmente confían. En 11 años pasé de suites manuales y Selenium a liderar un Centro de Excelencia de QA que estandarizó Playwright para pruebas E2E y de API en múltiples equipos — y hoy me enfoco en llevar la IA al testing de forma responsable: generación de pruebas con MCP, self-healing y evaluación de productos basados en LLMs.',
@@ -26,6 +25,33 @@ export const profile = {
     { value: '4+', label: { en: 'years leading', es: 'años liderando' } as L },
     { value: '40%', label: { en: 'faster, more reliable runs', es: 'ejecuciones más rápidas y estables' } as L },
     { value: '30%', label: { en: 'less maintenance with AI', es: 'menos mantenimiento con IA' } as L },
+  ],
+};
+
+/** Home hero. `locatorText` is the excerpt of `description` the Inspect mode's locator matches on. */
+export const hero = {
+  name: 'Julian Betancourt',
+  roles: [
+    {
+      id: 'engineer',
+      label: 'Senior QA Automation Engineer',
+      description: {
+        en: 'I design, build and scale test automation that teams actually trust — UI, API and AI-assisted.',
+        es: 'Diseño, construyo y escalo automatización de pruebas en la que los equipos realmente confían: UI, API y asistida por IA.',
+      } as L,
+      locatorText: { en: 'teams actually trust', es: 'realmente confían' } as L,
+      skills: ['Playwright', 'TypeScript', 'API testing', 'GitHub Actions', 'AI / MCP'],
+    },
+    {
+      id: 'lead',
+      label: 'QA Lead',
+      description: {
+        en: 'I led a QA Center of Excellence that standardized Playwright for E2E and API testing across client teams.',
+        es: 'Lideré un Centro de Excelencia de QA que estandarizó Playwright para pruebas E2E y de API en múltiples equipos.',
+      } as L,
+      locatorText: { en: 'QA Center of Excellence', es: 'Centro de Excelencia de QA' } as L,
+      skills: ['QA strategy', 'Quality roadmap', 'Mentorship', 'Playwright standard'],
+    },
   ],
 };
 

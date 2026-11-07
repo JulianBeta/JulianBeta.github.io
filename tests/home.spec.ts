@@ -4,11 +4,19 @@ import { expectFontLoaded } from './fonts';
 test.describe('Home page', () => {
   test('renders profile, experience and projects in English', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Julian Betancourt Cuervo');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Julian Betancourt');
     await expect(page.getByRole('heading', { name: 'Experience' })).toBeVisible();
     await expect(page.locator('.job')).not.toHaveCount(0);
     await expect(page.locator('.job').first()).toContainText('Perficient');
     await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible();
+  });
+
+  test('About closes with the career stats', async ({ page }) => {
+    await page.goto('/');
+    const stats = page.locator('#about .stat');
+    await expect(stats).toHaveCount(4);
+    await expect(stats.first()).toContainText('years in QA');
+    await expect(page.locator('.hero .stat')).toHaveCount(0);
   });
 
   test('uses Oswald for headings and Nunito for body text', async ({ page }) => {

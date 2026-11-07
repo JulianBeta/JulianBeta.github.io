@@ -104,6 +104,7 @@ const href = (target: string) => (target.startsWith('#') ? `${home}${target}` : 
           </span>
         </a>
         <p class="tested"><span class="check" aria-hidden="true">✓</span> {t(lang, 'footer.tested')}</p>
+        <a href={localePath(lang, '/design-system/')}>{t(lang, 'footer.ds')}</a>
         <SocialLinks class="footer-links" />
       </div>
     </footer>

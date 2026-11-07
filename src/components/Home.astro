@@ -4,56 +4,29 @@ import { t, localePath, formatMonth } from '../data/i18n';
 import { getPosts, postSlug, formatDate } from '../data/blog';
 import Icon from './Icon.astro';
 import Logo from './Logo.astro';
+import Hero from './Hero.astro';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const posts = (await getPosts(lang)).slice(0, 3);
-
-// Hero "test run" panel: the CV told as a passing suite.
-const suite = [
-  ['Playwright', lang === 'en' ? 'enterprise standard set' : 'estándar empresarial'],
-  ['API + Auth0', lang === 'en' ? 'OAuth/OIDC & RBAC validated' : 'OAuth/OIDC y RBAC validados'],
-  ['AI / MCP', lang === 'en' ? 'self-healing, −30% maintenance' : 'self-healing, −30% mantenimiento'],
-  ['QA CoE', lang === 'en' ? 'strategy & mentorship' : 'estrategia y mentoría'],
-];
 ---
 
-<section class="hero" aria-labelledby="hero-title">
-  <div class="container hero-grid">
-    <div>
-      <h1 id="hero-title">{profile.name}</h1>
-      <p class="headline">{profile.headline[lang]}</p>
-      <p class="location">{profile.location[lang]}</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href={profile.cv[lang]} download data-testid="cv-download"><Icon name="download" />{t(lang, 'hero.cta.cv')}</a>
-        <a class="btn btn-ghost" href="#contact">{t(lang, 'hero.cta.contact')}</a>
-      </div>
-    </div>
-
-    <div class="terminal" role="img" aria-label={lang === 'en' ? 'Career shown as a passing test run' : 'Carrera mostrada como una ejecución de pruebas exitosa'}>
-      <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span><code>npx playwright test career.spec.ts</code></div>
-      <pre aria-hidden="true"><code>{suite.map(([name, detail]) => (
-<span class="line"><span class="pass">✓</span> <span class="spec">{name}</span> <span class="muted">› {detail}</span>{'\n'}</span>
-))}<span class="line">{'\n'}<span class="pass">{suite.length} passed</span> <span class="muted">({profile.yearsExperience}y)</span></span></code></pre>
-    </div>
-  </div>
-
-  <div class="container stats">
-    {profile.stats.map((s) => (
-      <div class="stat">
-        <span class="stat-value">{s.value}</span>
-        <span class="stat-label">{s.label[lang]}</span>
-      </div>
-    ))}
-  </div>
-</section>
+<Hero lang={lang} />
 
 <section id="about" class="section" aria-labelledby="about-title">
   <div class="container narrow">
     <h2 id="about-title">{t(lang, 'section.about')}</h2>
     <p class="lead">{profile.summary[lang]}</p>
+    <div class="stats">
+      {profile.stats.map((s) => (
+        <div class="stat">
+          <span class="stat-value">{s.value}</span>
+          <span class="stat-label">{s.label[lang]}</span>
+        </div>
+      ))}
+    </div>
   </div>
 </section>
 

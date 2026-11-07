@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 const pairs = [
   ['/', '/es/'],
   ['/blog/', '/es/blog/'],
+  ['/design-system/', '/es/design-system/'],
   ['/blog/why-this-site-tests-itself/', '/es/blog/por-que-este-sitio-se-prueba-a-si-mismo/'],
 ];
 

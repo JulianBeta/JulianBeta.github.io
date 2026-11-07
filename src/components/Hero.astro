@@ -1,0 +1,259 @@
+---
+import { hero, profile, type Lang } from '../data/profile';
+import { t } from '../data/i18n';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+// Locators are built from the strings the page displays, so they hold in both languages.
+const q = (text: string) => `'${text.replace(/'/g, "\\'")}'`;
+const locators = {
+  name: `page.getByRole('heading', { name: ${q(hero.name)} })`,
+  // The summary in About repeats these words, so text locators are scoped to the hero.
+  text: (excerpt: string) => `page.getByRole('region', { name: ${q(hero.name)} }).getByText(${q(excerpt)})`,
+  role: (label: string) => `page.getByRole('button', { name: ${q(label)}, pressed: true })`,
+  skills: `page.getByRole('list', { name: ${q(t(lang, 'hero.skills'))} })`,
+  link: (name: string) => `page.getByRole('link', { name: ${q(name)} })`,
+};
+const [firstRole] = hero.roles;
+---
+
+<section
+  class="hero"
+  aria-labelledby="hero-title"
+  data-hero
+  data-inspect="on"
+  data-state-on={t(lang, 'hero.inspect.on')}
+  data-state-off={t(lang, 'hero.inspect.off')}
+  data-hint-on={t(lang, 'hero.inspect.hintOn')}
+  data-hint-off={t(lang, 'hero.inspect.hintOff')}
+  data-locator-label={t(lang, 'hero.inspect.locator')}
+  data-copy-label={t(lang, 'hero.inspect.copy')}
+  data-copied={t(lang, 'hero.inspect.copied')}
+  data-copy-failed={t(lang, 'hero.inspect.copyFailed')}
+>
+  <script is:inline>document.documentElement.classList.add('js');</script>
+
+  <div class="inspect-bar rise needs-js" style="--delay: 0.05s">
+    <button class="inspect-toggle" type="button" aria-pressed="true" data-inspect-toggle>
+      <span class="inspect-led" aria-hidden="true"></span>
+      {t(lang, 'hero.inspect')}
+      <span aria-hidden="true">· <span data-inspect-state>{t(lang, 'hero.inspect.on')}</span></span>
+    </button>
+    <span class="inspect-hint" data-inspect-hint>{t(lang, 'hero.inspect.hintOn')}</span>
+  </div>
+
+  <div class="rise" style="--delay: 0.1s"><Logo class="hero-mark" size="3.75rem" color="var(--bright-snow)" /></div>
+
+  <div class="rise" style="--delay: 0.16s; margin-top: 1.4rem">
+    <div class="inspect-target" data-locator={locators.name} data-focusable>
+      <h1 id="hero-title"><span class="hero-name">{hero.name}</span></h1>
+    </div>
+  </div>
+  <p class="eyebrow hero-location rise" style="--delay: 0.22s">{profile.location[lang]}</p>
+
+  <noscript><p class="headline">{firstRole.label}</p></noscript>
+  <div class="rise needs-js" style="--delay: 0.28s">
+    <div class="inspect-target" data-locator={locators.role(firstRole.label)}>
+      <div class="role-switch" role="group" aria-label={t(lang, 'hero.roles')} data-role-switch data-active={firstRole.id}>
+        <span class="role-switch-indicator" aria-hidden="true"></span>
+        {hero.roles.map((role, i) => (
+          <button type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-role={role.id} data-locator={locators.role(role.label)}>{role.label}</button>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-panels">
+    {hero.roles.map((role, i) => (
+      <div class="hero-panel" data-panel={role.id} hidden={i !== 0}>
+        <div class="inspect-target" data-locator={locators.text(role.locatorText[lang])} data-focusable>
+          <p>{role.description[lang]}</p>
+        </div>
+        <div class="inspect-target" data-locator={locators.skills} data-focusable>
+          <ul class:list={['chips', { 'chips-test': i === 0 }]} aria-label={t(lang, 'hero.skills')}>
+            {role.skills.map((skill) => <li lang="en">{skill}</li>)}
+          </ul>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="cta-row rise" style="--delay: 0.4s">
+    <div class="inspect-target" data-locator={locators.link(t(lang, 'hero.cta.cv'))}>
+      <a class="btn btn-primary" href={profile.cv[lang]} download data-testid="cv-download"><Icon name="download" />{t(lang, 'hero.cta.cv')}</a>
+    </div>
+    <div class="inspect-target" data-locator={locators.link(t(lang, 'hero.cta.contact'))}>
+      <a class="btn btn-ghost" href="#contact">{t(lang, 'hero.cta.contact')}</a>
+    </div>
+  </div>
+
+  <a class="scroll-cue rise" href="#about" style="--delay: 0.5s">{t(lang, 'nav.about')}<Icon name="chevron-down" size="1.25rem" /></a>
+
+  <div class="inspect-toast" role="status" data-inspect-toast></div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-hero]');
+  if (root) {
+    const data = root.dataset;
+    const toggle = root.querySelector<HTMLButtonElement>('[data-inspect-toggle]')!;
+    const state = root.querySelector<HTMLElement>('[data-inspect-state]')!;
+    const hint = root.querySelector<HTMLElement>('[data-inspect-hint]')!;
+    const toast = root.querySelector<HTMLElement>('[data-inspect-toast]')!;
+    const roleSwitch = root.querySelector<HTMLElement>('[data-role-switch]')!;
+    const roleTarget = roleSwitch.closest<HTMLElement>('.inspect-target')!;
+    const targets = [...root.querySelectorAll<HTMLElement>('.inspect-target')];
+    const roleButtons = [...roleSwitch.querySelectorAll<HTMLButtonElement>('button')];
+
+    let inspecting = true;
+    let open: { target: HTMLElement; tip: HTMLElement } | null = null;
+    let toastTimer: number | undefined;
+    let refocusing = false;
+
+    function showToast(message: string) {
+      window.clearTimeout(toastTimer);
+      // Emptying first restarts the entrance and re-announces a repeated message.
+      toast.textContent = '';
+      requestAnimationFrame(() => { toast.textContent = message; });
+      toastTimer = window.setTimeout(() => { toast.textContent = ''; }, 2400);
+    }
+
+    async function copy(code: string) {
+      try {
+        await navigator.clipboard.writeText(code);
+        showToast(data.copied!);
+      } catch {
+        showToast(data.copyFailed!);
+      }
+    }
+
+    function closeTip() {
+      if (!open) return;
+      const { target, tip } = open;
+      const focusWasInTip = tip.contains(document.activeElement);
+      open = null;
+      tip.remove();
+      target.classList.remove('hit');
+      if (focusWasInTip) {
+        // Focus returns to the target without reopening the tip it just closed.
+        refocusing = true;
+        (target.querySelector<HTMLElement>('[aria-pressed="true"], a') ?? target).focus();
+        refocusing = false;
+      }
+    }
+
+    // The tip exists only while open: its text would otherwise match the text locators it offers.
+    function openTip(target: HTMLElement) {
+      if (!inspecting || refocusing || open?.target === target) return;
+      closeTip();
+      const code = target.dataset.locator!;
+      const tip = document.createElement('div');
+      tip.className = 'inspect-tip';
+      const box = document.createElement('div');
+      box.className = 'inspect-tip-box';
+      const text = document.createElement('code');
+      text.textContent = code;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'inspect-copy';
+      button.textContent = data.copyLabel!;
+      button.setAttribute('aria-label', `${data.copyLabel}: ${code}`);
+      button.addEventListener('click', () => copy(target.dataset.locator!));
+      box.append(text, button);
+      tip.append(box);
+      target.append(tip);
+      target.classList.add('hit');
+      open = { target, tip };
+      fitTip(tip);
+    }
+
+    // Keep the tip on screen and clear of the sticky header.
+    function fitTip(tip: HTMLElement) {
+      const margin = 16;
+      const rect = tip.getBoundingClientRect();
+      const header = document.querySelector('.site-header')?.getBoundingClientRect().bottom ?? 0;
+      if (rect.top < header) tip.classList.add('below');
+      const overflow = Math.max(0, margin - rect.left) - Math.max(0, rect.right - (document.documentElement.clientWidth - margin));
+      tip.style.setProperty('--tip-shift', `${overflow}px`);
+    }
+
+    function refreshTip() {
+      if (!open) return;
+      const { target } = open;
+      closeTip();
+      openTip(target);
+    }
+
+    function setInspecting(on: boolean) {
+      inspecting = on;
+      if (!on) closeTip();
+      root!.dataset.inspect = on ? 'on' : 'off';
+      toggle.setAttribute('aria-pressed', String(on));
+      state.textContent = on ? data.stateOn! : data.stateOff!;
+      hint.textContent = on ? data.hintOn! : data.hintOff!;
+      for (const target of targets) {
+        if (!('focusable' in target.dataset)) continue;
+        // Keyboard and touch reach the text elements only while there is something to reveal.
+        if (on) {
+          target.tabIndex = 0;
+          target.setAttribute('role', 'group');
+          target.setAttribute('aria-label', `${data.locatorLabel}: ${target.dataset.locator}`);
+        } else {
+          target.removeAttribute('tabindex');
+          target.removeAttribute('role');
+          target.removeAttribute('aria-label');
+        }
+      }
+    }
+
+    function setRole(id: string) {
+      if (open && open.target !== roleTarget) closeTip();
+      roleSwitch.dataset.active = id;
+      for (const button of roleButtons) {
+        const active = button.dataset.role === id;
+        button.setAttribute('aria-pressed', String(active));
+        if (active) roleTarget.dataset.locator = button.dataset.locator;
+      }
+      // No aria-live here: tips open inside the panels and would be read out too. aria-pressed announces the
+      // change, and a copy of the description in a status element would break the locator offered for it.
+      for (const panel of root!.querySelectorAll<HTMLElement>('[data-panel]')) panel.hidden = panel.dataset.panel !== id;
+      refreshTip();
+    }
+
+    toggle.addEventListener('click', () => setInspecting(!inspecting));
+    for (const button of roleButtons) button.addEventListener('click', () => setRole(button.dataset.role!));
+
+    const targetOf = (node: EventTarget | null) => (node instanceof Element ? node.closest<HTMLElement>('.inspect-target') : null);
+    const staysOpen = (next: EventTarget | null) => !!open && next instanceof Node && open.target.contains(next);
+
+    // Pointer devices only: on touch, adding content on the emulated hover can swallow the tap's click.
+    if (matchMedia('(hover: hover)').matches) {
+      root.addEventListener('mouseover', (e) => {
+        const target = targetOf(e.target);
+        if (target) openTip(target);
+      });
+      root.addEventListener('mouseout', (e) => {
+        if (staysOpen(e.relatedTarget) || open?.target.contains(document.activeElement)) return;
+        closeTip();
+      });
+    }
+    root.addEventListener('focusin', (e) => {
+      const target = targetOf(e.target);
+      if (target) openTip(target);
+    });
+    root.addEventListener('focusout', (e) => {
+      if (staysOpen(e.relatedTarget) || open?.target.matches(':hover')) return;
+      closeTip();
+    });
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeTip();
+    });
+
+    setInspecting(true);
+  }
+</script>
