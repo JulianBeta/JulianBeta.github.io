@@ -275,12 +275,12 @@ export const projects: Project[] = [
   {
     name: 'Coda · LLM Eval & Red Team',
     cv: {
-      en: 'Promptfoo evals and red teaming for an LLM chatbot: Claude Haiku vs. Sonnet vs. Qwen, LLM-as-a-judge rubrics, 376 generated attacks, CI quality gate.',
-      es: 'Evals y red teaming con Promptfoo para un chatbot LLM: Claude Haiku vs. Sonnet vs. Qwen, rúbricas LLM-as-a-judge, 376 ataques generados, quality gate en CI.',
+      en: 'Promptfoo evals and red teaming for an LLM chatbot: Claude Haiku vs. Sonnet, LLM-as-a-judge rubrics, 376 generated attacks, CI that validates configs and reporting scripts.',
+      es: 'Evals y red teaming con Promptfoo para un chatbot LLM: Claude Haiku vs. Sonnet, rúbricas LLM-as-a-judge, 376 ataques generados, CI que valida configs y scripts de reportes.',
     },
     description: {
-      en: 'A music-composition coach chatbot evaluated and red-teamed with Promptfoo: Claude Haiku vs. Sonnet vs. free Qwen on music-theory accuracy, guardrails, LLM-as-a-judge rubrics and 376 generated attacks, with a quality gate in CI.',
-      es: 'Un chatbot que asesora en composición musical, evaluado y sometido a red teaming con Promptfoo: Claude Haiku vs. Sonnet vs. Qwen gratuito en precisión de teoría musical, guardrails, rúbricas LLM-as-a-judge y 376 ataques generados, con quality gate en CI.',
+      en: 'A music-composition coach chatbot evaluated and red-teamed with Promptfoo: Claude Haiku vs. Sonnet on music-theory accuracy, guardrails, LLM-as-a-judge rubrics and 376 generated attacks. CI runs the reporting-script unit tests and validates the configs without calling any model; a 90% quality gate applies only if an API key is added.',
+      es: 'Un chatbot que asesora en composición musical, evaluado y sometido a red teaming con Promptfoo: Claude Haiku vs. Sonnet en precisión de teoría musical, guardrails, rúbricas LLM-as-a-judge y 376 ataques generados. El CI corre las pruebas unitarias de los scripts de reportes y valida las configs sin llamar a ningún modelo; el quality gate de 90% solo aplica si se agrega una API key.',
     },
     tags: ['Promptfoo', 'LLM-as-a-judge', 'Red teaming', 'Claude', 'CI'],
     repo: 'https://github.com/JulianBeta/composition-coach-llm-evals',
